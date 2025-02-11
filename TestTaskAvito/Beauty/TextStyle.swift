@@ -27,12 +27,12 @@ enum TextStyle {
     case titleLarge // 22pt, Bold
     case productTitle // 20pt, Bold
 
-    case bodySmall // 17pt, Regular
-    case bodySmallBold // 17pt, Bold
-    case bodySmallMedium // 17pt, Medium
+    case body // 17pt, Regular
+    case bodyBold // 17pt, Bold
+    case bodyMedium // 17pt, Medium
 
-    case body // 16pt, Regular
-    case bodyMedium // 16pt, Medium
+    case bodySmall // 16pt, Regular
+    case bodySmallMedium // 16pt, Medium
 }
 
 extension TextStyle {
@@ -44,15 +44,15 @@ extension TextStyle {
             return FontDescription(font: .bold, size: 22)
         case .productTitle:
             return FontDescription(font: .bold, size: 20)
-        case .bodySmall:
-            return FontDescription(font: .regular, size: 17)
-        case .bodySmallBold:
-            return FontDescription(font: .bold, size: 17)
-        case .bodySmallMedium:
-            return FontDescription(font: .medium, size: 17)
         case .body:
-            return FontDescription(font: .regular, size: 16)
+            return FontDescription(font: .regular, size: 17)
+        case .bodyBold:
+            return FontDescription(font: .bold, size: 17)
         case .bodyMedium:
+            return FontDescription(font: .medium, size: 17)
+        case .bodySmall:
+            return FontDescription(font: .regular, size: 16)
+        case .bodySmallMedium:
             return FontDescription(font: .medium, size: 16)
         }
     }

@@ -14,15 +14,31 @@ final class SearchViewController: UIViewController {
             static let message = "init(coder:) has not been implemented"
         }
         
-        enum TextField {
+        enum SearchTextField {
             static let leftImage: UIImage? = UIImage(systemName: "magnifyingglass")
             static let placeholder: String = "Search"
+            static let topOffset: CGFloat = 8
             static let horizontalOffset: CGFloat = 16
+            static let leftViewWidth: CGFloat = 48
+            static let leftViewHeight: CGFloat = 20
+            static let leftViewRightOffset: CGFloat = 8
         }
         
-        enum ProductCollection {
+        enum Collection {
             static let topOffset: CGFloat = 12
+            static let sectionInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+            static let lineSpacing: CGFloat = 8
+            static let interitemSpacing: CGFloat = 12
+            static let filtersHeight: CGFloat = 108
+            static let productsHeight: CGFloat = 262
+            static let filterEmptySpacing: CGFloat = 32
+            static let productEmptySpacing: CGFloat = 44
         }
+    }
+    
+    private enum CollectionSection: Int, CaseIterable {
+        case filters
+        case products
     }
     
     // MARK: - Private fields
@@ -31,10 +47,11 @@ final class SearchViewController: UIViewController {
     // MARK: - UI Components
     private let factory: ViewFactory = ViewFactory()
     private var searchTextField: UITextField = UITextField()
+    private var searchTextFieldRightConstarint: NSLayoutConstraint?
     private let searchTextFieldLeftView: UIImageView = UIImageView()
-    private let productCollectionView: UICollectionView = UICollectionView(
+    private let collection: UICollectionView = UICollectionView(
         frame: .zero,
-        collectionViewLayout: UICollectionViewLayout()
+        collectionViewLayout: UICollectionViewFlowLayout()
     )
     
     // MARK: - Lifecycle
@@ -70,64 +87,166 @@ final class SearchViewController: UIViewController {
     }
     
     private func setUpSearchTextField() {
-        searchTextFieldLeftView.image = Constant.TextField.leftImage
+        searchTextFieldLeftView.image = Constant.SearchTextField.leftImage
+        searchTextFieldLeftView.tintColor = UIColor(color: .base10)
+        searchTextField = factory.setUpTextField(
+            textField: searchTextField,
+            placeholder: Constant.SearchTextField.placeholder,
+            leftView: factory.setUpViewForTextField(
+                imageView: searchTextFieldLeftView,
+                width: Constant.SearchTextField.leftViewWidth,
+                height: Constant.SearchTextField.leftViewHeight,
+                rightOffset: Constant.SearchTextField.leftViewRightOffset
+            )
+        )
+        
         searchTextField.delegate = self
-        searchTextField = factory.createTextField(
-            placeholder: Constant.TextField.placeholder,
-            leftImageView: searchTextFieldLeftView
+        
+        view.addSubview(searchTextField)
+        searchTextField.pinTop(to: view.safeAreaLayoutGuide.topAnchor, Constant.SearchTextField.topOffset)
+        searchTextField.pinLeft(to: view, Constant.SearchTextField.horizontalOffset)
+        searchTextFieldRightConstarint = searchTextField.trailingAnchor.constraint(
+            equalTo: view.trailingAnchor,
+            constant: -Constant.SearchTextField.horizontalOffset
         )
 
-        view.addSubview(searchTextField)
-        searchTextField.pinTop(to: view.safeAreaLayoutGuide.topAnchor)
-        searchTextField.pinHorizontal(to: view, Constant.TextField.horizontalOffset)
+        searchTextFieldRightConstarint?.isActive = true
     }
     
     private func setUpProductCollection() {
-        productCollectionView.delegate = self
-        productCollectionView.dataSource = self
-        productCollectionView.backgroundColor = UIColor(color: .base70)
-        productCollectionView.register(
-            ProductCollectionViewCell.self,
-            forCellWithReuseIdentifier: ProductCollectionViewCell.reuseId
+        collection.delegate = self
+        collection.dataSource = self
+        collection.backgroundColor = UIColor(color: .base70)
+        collection.register(
+            ProductViewCell.self,
+            forCellWithReuseIdentifier: ProductViewCell.reuseId
         )
         
-        view.addSubview(productCollectionView)
-        productCollectionView.pinTop(to: searchTextField.bottomAnchor, Constant.ProductCollection.topOffset)
-        productCollectionView.pinHorizontal(to: view)
-        productCollectionView.pinBottom(to: view)
+        collection.register(
+            FiltersViewCell.self,
+            forCellWithReuseIdentifier: FiltersViewCell.reuseId
+        )
+        
+        view.addSubview(collection)
+        collection.pinTop(to: searchTextField.bottomAnchor, Constant.Collection.topOffset)
+        collection.pinHorizontal(to: view)
+        collection.pinBottom(to: view)
     }
 }
 
 // MARK: - UICollectionViewDelegate
-extension SearchViewController: UICollectionViewDelegate {
+extension SearchViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        let section = CollectionSection.allCases[indexPath.section]
+        
+        switch section {
+        case .filters:
+            return CGSize(
+                width: view.frame.width - Constant.Collection.filterEmptySpacing,
+                height: Constant.Collection.filtersHeight
+            )
+        case .products:
+            return CGSize(
+                width: (view.frame.width - Constant.Collection.productEmptySpacing) / 2,
+                height: Constant.Collection.productsHeight
+            )
+        }
+    }
     
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        insetForSectionAt section: Int
+    ) -> UIEdgeInsets {
+        Constant.Collection.sectionInsets
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        minimumInteritemSpacingForSectionAt section: Int
+    ) -> CGFloat {
+        return Constant.Collection.interitemSpacing
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        minimumLineSpacingForSectionAt section: Int
+    ) -> CGFloat {
+        let section = CollectionSection.allCases[section]
+        
+        switch section {
+        case .filters:
+            return 0
+        case .products:
+            return Constant.Collection.lineSpacing
+        }
+    }
 }
 
 // MARK: - UICollectionViewDataSource
 extension SearchViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        2
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        CollectionSection.allCases.count
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        numberOfItemsInSection section: Int
+    ) -> Int {
+        let section = CollectionSection.allCases[section]
+        
+        switch section {
+        case .filters:
+            return 1
+        case .products:
+            return 8
+        }
     }
     
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: ProductCollectionViewCell.reuseId,
-            for: indexPath
-        ) as? ProductCollectionViewCell else {
-            return UICollectionViewCell()
-        }
         
-        return cell
+        let section = CollectionSection.allCases[indexPath.section]
+        
+        switch section {
+        case .filters:
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: FiltersViewCell.reuseId,
+                for: indexPath
+            ) as? FiltersViewCell else {
+                return UICollectionViewCell()
+            }
+            
+            return cell
+        case .products:
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: ProductViewCell.reuseId,
+                for: indexPath
+            ) as? ProductViewCell else {
+                return UICollectionViewCell()
+            }
+        
+            cell.configure(name: "Futuristic Holographic Soccer Cleats", price: "39$")
+            return cell
+        }
     }
 }
 
 // MARK: - UITextFieldDelegate
 extension SearchViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        print(1)
+        
+        guard let rightConstraint = searchTextFieldRightConstarint else { return }
+        rightConstraint.constant = -50
+        view.layoutIfNeeded()
     }
     
     func textField(
