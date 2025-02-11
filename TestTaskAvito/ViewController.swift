@@ -10,6 +10,15 @@ import UIKit
 class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
+        view.backgroundColor = UIColor(color: .base80)
+        let factory = MainViewFactory()
+        let title = factory.createLabel(
+            text: "39$",
+            font: TextStyle.priceLarge.font,
+            textColor: UIColor(color: .base0)
+        )
+        view.addSubview(title)
+        
+        title.pinCenter(to: view)
     }
 }
