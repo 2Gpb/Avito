@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class MainViewFactory {
+final class ViewFactory {
     // MARK: - UILabel
     func createLabel(
         text: String,
@@ -43,15 +43,29 @@ final class MainViewFactory {
     // MARK: - UITextField
     func createTextField(
         placeholder: String,
-        font: UIFont,
-        textColor: UIColor,
-        borderStyle: UITextField.BorderStyle = .roundedRect
+        placeholderColor: UIColor = UIColor(color: .base10),
+        font: UIFont = TextStyle.bodyMedium.font,
+        textColor: UIColor = UIColor(color: .base0),
+        backgroundColor: UIColor = UIColor(color: .base40),
+        cornerRadius: CGFloat = 16,
+        leftImageView: UIImageView
     ) -> UITextField {
         let textField = UITextField()
-        textField.placeholder = placeholder
         textField.font = font
+        textField.tintColor = UIColor(color: .base0)
         textField.textColor = textColor
-        textField.borderStyle = borderStyle
+        textField.backgroundColor = backgroundColor
+        textField.layer.cornerRadius = cornerRadius
+        textField.leftView = setUpLeftView(imageView: leftImageView)
+        textField.leftViewMode = .always
+        textField.attributedPlaceholder = NSAttributedString(
+            string: placeholder,
+            attributes: [
+                .foregroundColor: placeholderColor
+            ]
+        )
+        
+        textField.setHeight(48)
         return textField
     }
     
@@ -68,5 +82,19 @@ final class MainViewFactory {
         imageView.layer.cornerRadius = cornerRadius
         imageView.clipsToBounds = clipsToBounds
         return imageView
+    }
+    
+    // MARK: - Private methods
+    private func setUpLeftView(imageView: UIImageView) -> UIView {
+        let leftView: UIView = UIView()
+        leftView.setWidth(48)
+        leftView.setHeight(20)
+        
+        imageView.tintColor = UIColor(color: .base10)
+        
+        leftView.addSubview(imageView)
+        imageView.pinVertical(to: leftView)
+        imageView.pinRight(to: leftView, 8)
+        return leftView
     }
 }
