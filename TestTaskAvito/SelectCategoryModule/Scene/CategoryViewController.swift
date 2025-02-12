@@ -18,13 +18,17 @@ final class CategoryViewController: UIViewController {
             static let cornerRadius: CGFloat = 16
         }
         
+        enum WrapView {
+            static let height: CGFloat = 68
+        }
+        
         enum Title {
             static let text = "Categories"
-            static let topOffset: CGFloat = 27
+            static let bottomOffset: CGFloat = 17
         }
         
         enum CloseButton {
-            static let topOffset: CGFloat = 26
+            static let bottomOffset: CGFloat = 17
             static let leftOffset: CGFloat = 16
             static let width: CGFloat = 20
             static let height: CGFloat = 19
@@ -35,7 +39,6 @@ final class CategoryViewController: UIViewController {
         }
         
         enum TableView {
-            static let topOffset: CGFloat = 19
             static let heightForRow: CGFloat = 48
         }
     }
@@ -44,6 +47,7 @@ final class CategoryViewController: UIViewController {
     private let interactor: CategoryBusinessLogic
     
     // MARK: - UI Components
+    private let wrapView: UIView = UIView()
     private var titleLabel: UILabel = UILabel()
     private let closeButton: UIButton = UIButton(type: .system)
     private let categoriesTableView: UITableView = UITableView()
@@ -68,6 +72,7 @@ final class CategoryViewController: UIViewController {
     private func setUp() {
         view.backgroundColor = UIColor(color: .base70)
         setupSheetStyle()
+        setUpWrapView()
         setUpTitleLabel()
         setUpCloseButton()
         setUpCategoriesTableView()
@@ -81,6 +86,15 @@ final class CategoryViewController: UIViewController {
         }
     }
     
+    private func setUpWrapView() {
+        wrapView.backgroundColor = UIColor(color: .base70)
+        
+        view.addSubview(wrapView)
+        wrapView.pinTop(to: view)
+        wrapView.pinHorizontal(to: view)
+        wrapView.setHeight(Constant.WrapView.height)
+    }
+    
     private func setUpTitleLabel() {
         titleLabel = ViewFactory.shared.setUpLabel(
             label: titleLabel,
@@ -90,9 +104,9 @@ final class CategoryViewController: UIViewController {
             alignment: .center
         )
         
-        view.addSubview(titleLabel)
-        titleLabel.pinCenterX(to: view)
-        titleLabel.pinTop(to: view, Constant.Title.topOffset)
+        wrapView.addSubview(titleLabel)
+        titleLabel.pinBottom(to: wrapView.bottomAnchor, Constant.Title.bottomOffset)
+        titleLabel.pinCenterX(to: wrapView)
     }
     
     private func setUpCloseButton() {
@@ -104,9 +118,9 @@ final class CategoryViewController: UIViewController {
         closeButton.tintColor = UIColor(color: .base0)
         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         
-        view.addSubview(closeButton)
-        closeButton.pinTop(to: view, Constant.CloseButton.topOffset)
-        closeButton.pinLeft(to: view, Constant.CloseButton.leftOffset)
+        wrapView.addSubview(closeButton)
+        closeButton.pinBottom(to: wrapView.bottomAnchor, Constant.CloseButton.bottomOffset)
+        closeButton.pinLeft(to: wrapView, Constant.CloseButton.leftOffset)
         closeButton.setWidth(Constant.CloseButton.width)
         closeButton.setHeight(Constant.CloseButton.height)
     }
@@ -120,7 +134,7 @@ final class CategoryViewController: UIViewController {
         categoriesTableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.reuseId)
         
         view.addSubview(categoriesTableView)
-        categoriesTableView.pinTop(to: titleLabel.bottomAnchor, Constant.TableView.topOffset)
+        categoriesTableView.pinTop(to: wrapView.bottomAnchor)
         categoriesTableView.pinHorizontal(to: view)
         categoriesTableView.pinBottom(to: view)
     }

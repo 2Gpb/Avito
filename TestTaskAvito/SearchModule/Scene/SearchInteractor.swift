@@ -22,4 +22,8 @@ final class SearchInteractor: SearchBusinessLogic {
     func loadSelectCategory() {
         presenter.routeToSelectCategory()
     }
+    
+    func loadPriceSelector() {
+        presenter.routeToPriceSelector()
+    }
 }

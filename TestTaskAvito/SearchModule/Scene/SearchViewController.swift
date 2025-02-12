@@ -396,6 +396,10 @@ extension SearchViewController: UICollectionViewDataSource {
                 self?.interactor.loadSelectCategory()
             }
             
+            cell.openPriceSelector = { [weak self] in
+                self?.interactor.loadPriceSelector()
+            }
+            
             return cell
         case .products:
             guard let cell = collectionView.dequeueReusableCell(

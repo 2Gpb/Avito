@@ -22,4 +22,10 @@ extension SearchPresenter: SearchRouterLogic {
         bottomSheetVC.modalPresentationStyle = .pageSheet
         view?.present(bottomSheetVC, animated: true)
     }
+    
+    func routeToPriceSelector() {
+        let bottomSheetVC = PriceAssembly.build()
+        bottomSheetVC.modalPresentationStyle = .pageSheet
+        view?.present(bottomSheetVC, animated: true)
+    }
 }

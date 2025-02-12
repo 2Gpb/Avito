@@ -45,6 +45,7 @@ final class FiltersViewCell: UICollectionViewCell {
     
     // MARK: - Variables
     var openSelectCategory: (() -> Void)?
+    var openPriceSelector: (() -> Void)?
     
     // MARK: - UI Components
     private var categoryTextField: UITextField = UITextField()
@@ -159,7 +160,7 @@ extension FiltersViewCell: UITextFieldDelegate {
             return false
         } else {
             textField.resignFirstResponder()
-            print(1)
+            openPriceSelector?()
             return false
         }
         
