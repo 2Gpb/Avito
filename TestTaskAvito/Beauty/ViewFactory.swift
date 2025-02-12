@@ -8,6 +8,9 @@
 import UIKit
 
 final class ViewFactory {
+    // MARK: - Singleton
+    static let shared = ViewFactory()
+    
     // MARK: - UILabel
     func setUpLabel(
         label: UILabel,

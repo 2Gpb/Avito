@@ -32,7 +32,7 @@ final class SearchViewController: UIViewController {
                 systemName: "xmark",
                 withConfiguration: UIImage.SymbolConfiguration(weight: .bold)
             )
-            static let clearButtonFrame: CGRect = CGRect(x: 10, y: 3, width: 14, height: 14)
+            static let clearButtonFrame: CGRect = CGRect(x: 10, y: 3, width: 15, height: 14)
         }
         
         enum Collection {
@@ -69,10 +69,9 @@ final class SearchViewController: UIViewController {
     private var interactor: SearchBusinessLogic
     
     // MARK: - UI Components
-    private let factory: ViewFactory = ViewFactory()
     private var searchTextField: UITextField = UITextField()
-    private let clearSearchTextFieldbutton: UIButton = UIButton(type: .system)
     private var searchTextFieldRightConstarint: NSLayoutConstraint?
+    private let clearSearchTextFieldButton: UIButton = UIButton(type: .system)
     private let leftViewSearchTextField: UIImageView = UIImageView()
     private let rightViewSearchTextField: UIImageView = UIImageView()
     private let collection: UICollectionView = UICollectionView(
@@ -121,7 +120,7 @@ final class SearchViewController: UIViewController {
     private func setUpSearchTextField() {
         leftViewSearchTextField.image = Constant.SearchTextField.leftImage
         leftViewSearchTextField.tintColor = UIColor(color: .base10)
-        searchTextField = factory.setUpTextField(
+        searchTextField = ViewFactory.shared.setUpTextField(
             textField: searchTextField,
             placeholder: Constant.SearchTextField.placeholder,
             leftView: setUpLeftViewForTextField(
@@ -137,7 +136,7 @@ final class SearchViewController: UIViewController {
             )
         )
         
-        clearSearchTextFieldbutton.isHidden = true
+        clearSearchTextFieldButton.isHidden = true
         searchTextField.delegate = self
         
         view.addSubview(searchTextField)
@@ -169,15 +168,16 @@ final class SearchViewController: UIViewController {
         height: CGFloat
     ) -> UIView {
         let leftView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
-        clearSearchTextFieldbutton.setImage(imageView, for: .normal)
-        clearSearchTextFieldbutton.addTarget(
+        clearSearchTextFieldButton.setImage(imageView, for: .normal)
+        clearSearchTextFieldButton.tintColor = UIColor(color: .base0)
+        clearSearchTextFieldButton.addTarget(
                 self,
                 action: #selector(clearSearchTextField),
                 for: .touchUpInside
             )
         
-        leftView.addSubview(clearSearchTextFieldbutton)
-        clearSearchTextFieldbutton.frame = Constant.SearchTextField.clearButtonFrame
+        leftView.addSubview(clearSearchTextFieldButton)
+        clearSearchTextFieldButton.frame = Constant.SearchTextField.clearButtonFrame
         return leftView
     }
     
@@ -202,7 +202,7 @@ final class SearchViewController: UIViewController {
     }
     
     private func setUpCancelButton() {
-        cancelButton = factory.setUpButton(
+        cancelButton = ViewFactory.shared.setUpButton(
             button: cancelButton,
             title: Constant.CancelButton.title,
             font: TextStyle.bodySmallMedium.font,
@@ -254,7 +254,7 @@ final class SearchViewController: UIViewController {
     
     @objc
     private func dismissKeyboard() {
-        clearSearchTextFieldbutton.isHidden = true
+        clearSearchTextFieldButton.isHidden = true
         searchTextField.resignFirstResponder()
     }
     
@@ -262,7 +262,7 @@ final class SearchViewController: UIViewController {
     private func clearSearchTextField() {
         searchTextField.text = nil
         leftViewSearchTextField.tintColor = UIColor(color: .base10)
-        clearSearchTextFieldbutton.isHidden = true
+        clearSearchTextFieldButton.isHidden = true
     }
 }
 
@@ -270,7 +270,7 @@ final class SearchViewController: UIViewController {
 extension SearchViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField.text != "" && textField.text != nil {
-            clearSearchTextFieldbutton.isHidden = false
+            clearSearchTextFieldButton.isHidden = false
         }
         
         view.backgroundColor = UIColor(color: .base70)
@@ -289,12 +289,12 @@ extension SearchViewController: UITextFieldDelegate {
         shouldChangeCharactersIn range: NSRange,
         replacementString string: String
     ) -> Bool {
-        clearSearchTextFieldbutton.isHidden = false
+        clearSearchTextFieldButton.isHidden = false
         leftViewSearchTextField.tintColor = UIColor(color: .base0)
         let newText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
         if newText.isEmpty {
             leftViewSearchTextField.tintColor = UIColor(color: .base10)
-            clearSearchTextFieldbutton.isHidden = true
+            clearSearchTextFieldButton.isHidden = true
         }
         
         return true
@@ -392,6 +392,10 @@ extension SearchViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             
+            cell.openSelectCategory = { [weak self] in
+                self?.interactor.loadSelectCategory()
+            }
+            
             return cell
         case .products:
             guard let cell = collectionView.dequeueReusableCell(
@@ -414,7 +418,7 @@ extension SearchViewController: UITableViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        clearSearchTextFieldbutton.isHidden = true
+        clearSearchTextFieldButton.isHidden = true
         searchTextField.resignFirstResponder()
     }
 }

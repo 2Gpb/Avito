@@ -41,10 +41,12 @@ final class FiltersViewCell: UICollectionViewCell {
     }
     
     // MARK: - ReuseId
-    static let reuseId = Constant.ReuseIdentifier.value
+    static let reuseId: String = Constant.ReuseIdentifier.value
+    
+    // MARK: - Variables
+    var openSelectCategory: (() -> Void)?
     
     // MARK: - UI Components
-    private let factory: ViewFactory = ViewFactory()
     private var categoryTextField: UITextField = UITextField()
     private var priceTextField: UITextField = UITextField()
     private var showButton: UIButton = UIButton()
@@ -71,13 +73,15 @@ final class FiltersViewCell: UICollectionViewCell {
     
     private func setUpCategoryTextField() {
         let views = createLeftAndRightViews()
-        categoryTextField = factory.setUpTextField(
+        categoryTextField = ViewFactory.shared.setUpTextField(
             textField: categoryTextField,
             placeholder: Constant.TextFields.categoryPlaceholder,
             font: TextStyle.bodySmall.font,
             leftView: views.leftView,
             rightView: views.rightView
         )
+        
+        categoryTextField.delegate = self
         
         contentView.addSubview(categoryTextField)
         categoryTextField.pinTop(to: contentView)
@@ -87,13 +91,15 @@ final class FiltersViewCell: UICollectionViewCell {
     
     private func setUpPriceTextField() {
         let views = createLeftAndRightViews()
-        priceTextField = factory.setUpTextField(
+        priceTextField = ViewFactory.shared.setUpTextField(
             textField: priceTextField,
             placeholder: Constant.TextFields.pricePlaceholder,
             font: TextStyle.bodySmall.font,
             leftView: views.leftView,
             rightView: views.rightView
         )
+        
+        priceTextField.delegate = self
         
         contentView.addSubview(priceTextField)
         priceTextField.pinTop(to: contentView)
@@ -105,7 +111,7 @@ final class FiltersViewCell: UICollectionViewCell {
         let leftView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 1))
         let imageView: UIImageView = UIImageView(image: Constant.TextFields.rightImage)
         imageView.tintColor = UIColor(color: .base0)
-        let rightView = factory.setUpViewForTextField(
+        let rightView = ViewFactory.shared.setUpViewForTextField(
             imageView: imageView,
             width: Constant.Views.width,
             height: Constant.Views.height,
@@ -116,7 +122,7 @@ final class FiltersViewCell: UICollectionViewCell {
     }
     
     private func setUpResetButton() {
-        resetButton = factory.setUpButton(
+        resetButton = ViewFactory.shared.setUpButton(
             button: resetButton,
             title: Constant.Buttons.resetTitle,
             titleColor: UIColor(color: .base0),
@@ -130,8 +136,7 @@ final class FiltersViewCell: UICollectionViewCell {
     }
     
     private func setUpShowButton() {
-        showButton = factory
-            .setUpButton(
+        showButton = ViewFactory.shared.setUpButton(
                 button: showButton,
                 title: Constant.Buttons.showTitle,
                 titleColor: UIColor(color: .base80),
@@ -142,5 +147,21 @@ final class FiltersViewCell: UICollectionViewCell {
         showButton.pinTop(to: categoryTextField.bottomAnchor, Constant.Buttons.topOffst)
         showButton.pinLeft(to: contentView)
         showButton.pinRight(to: resetButton.leadingAnchor, Constant.Buttons.rightOffset)
+    }
+}
+
+// MARK: - UITextFieldDelegate
+extension FiltersViewCell: UITextFieldDelegate {
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        if textField == categoryTextField {
+            textField.resignFirstResponder()
+            openSelectCategory?()
+            return false
+        } else {
+            textField.resignFirstResponder()
+            print(1)
+            return false
+        }
+        
     }
 }
