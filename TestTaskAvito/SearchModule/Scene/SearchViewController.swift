@@ -15,13 +15,16 @@ final class SearchViewController: UIViewController {
         }
         
         enum SearchTextField {
-            static let leftImage: UIImage? = UIImage(systemName: "magnifyingglass")
             static let placeholder: String = "Search"
             static let topOffset: CGFloat = 8
             static let horizontalOffset: CGFloat = 16
             static let leftViewWidth: CGFloat = 48
-            static let leftViewHeight: CGFloat = 20
-            static let leftViewRightOffset: CGFloat = 8
+            static let leftViewHeight: CGFloat = 16
+            static let leftViewImageOffset: CGRect = CGRect(x: 23, y: 0, width: 17.4, height: 16)
+            static let leftImage: UIImage? = UIImage(
+                systemName: "magnifyingglass",
+                withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)
+            )
         }
         
         enum Collection {
@@ -92,11 +95,11 @@ final class SearchViewController: UIViewController {
         searchTextField = factory.setUpTextField(
             textField: searchTextField,
             placeholder: Constant.SearchTextField.placeholder,
-            leftView: factory.setUpViewForTextField(
+            leftView: setUpViewForTextField(
                 imageView: searchTextFieldLeftView,
                 width: Constant.SearchTextField.leftViewWidth,
                 height: Constant.SearchTextField.leftViewHeight,
-                rightOffset: Constant.SearchTextField.leftViewRightOffset
+                offset: Constant.SearchTextField.leftViewImageOffset
             )
         )
         
@@ -111,6 +114,18 @@ final class SearchViewController: UIViewController {
         )
 
         searchTextFieldRightConstarint?.isActive = true
+    }
+    
+    private func setUpViewForTextField(
+        imageView: UIImageView,
+        width: CGFloat,
+        height: CGFloat,
+        offset: CGRect
+    ) -> UIView {
+        let leftView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
+        leftView.addSubview(imageView)
+        imageView.frame = offset
+        return leftView
     }
     
     private func setUpProductCollection() {

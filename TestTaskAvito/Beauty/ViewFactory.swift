@@ -80,13 +80,9 @@ final class ViewFactory {
         height: CGFloat,
         rightOffset: CGFloat
     ) -> UIView {
-        let leftView: UIView = UIView()
-        leftView.setWidth(width)
-        leftView.setHeight(height)
-        
+        let leftView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         leftView.addSubview(imageView)
-        imageView.pinVertical(to: leftView)
-        imageView.pinRight(to: leftView, rightOffset)
+        imageView.center = leftView.center
         return leftView
     }
 }
