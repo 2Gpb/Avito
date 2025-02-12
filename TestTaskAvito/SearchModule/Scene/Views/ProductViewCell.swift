@@ -34,10 +34,9 @@ final class ProductViewCell: UICollectionViewCell {
     }
     
     // MARK: - ReuseID
-    static let reuseId = Constant.ReuseIdentifier.value
+    static let reuseId: String = Constant.ReuseIdentifier.value
     
     // MARK: - UI Components
-    private let factory: ViewFactory = ViewFactory()
     private let image: UIImageView = UIImageView()
     private var name: UILabel = UILabel()
     private var price: UILabel = UILabel()
@@ -81,7 +80,7 @@ final class ProductViewCell: UICollectionViewCell {
     }
     
     private func setUpNameLabel() {
-        name = factory.setUpLabel(
+        name = ViewFactory.shared.setUpLabel(
             label: name,
             font: TextStyle.body.font,
             textColor: UIColor(color: .base5)
@@ -96,7 +95,7 @@ final class ProductViewCell: UICollectionViewCell {
     }
     
     private func setUpPriceLabel() {
-        price = factory.setUpLabel(
+        price = ViewFactory.shared.setUpLabel(
             label: price,
             font: TextStyle.bodyBold.font,
             textColor: UIColor(color: .base0)

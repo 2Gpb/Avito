@@ -9,10 +9,9 @@ import UIKit
 
 final class SearchQueryCell: UITableViewCell {
     // MARK: - ReuseId
-    static let reuseId = "SearchQueryCell"
+    static let reuseId: String = "SearchQueryCell"
     
     // MARK: - UI Components
-    private let factory: ViewFactory = ViewFactory()
     private let leftImageView: UIImageView = UIImageView()
     private var titleLabel: UILabel = UILabel()
     private let rightImageView: UIImageView = UIImageView()
@@ -24,6 +23,7 @@ final class SearchQueryCell: UITableViewCell {
         setUp()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -69,7 +69,7 @@ final class SearchQueryCell: UITableViewCell {
     }
     
     private func setUpTitleLabel() {
-        titleLabel = factory.setUpLabel(
+        titleLabel = ViewFactory.shared.setUpLabel(
             label: titleLabel,
             font: TextStyle.body.font,
             textColor: UIColor(color: .base0)
@@ -93,4 +93,3 @@ final class SearchQueryCell: UITableViewCell {
         separatorView.setHeight(1)
     }
 }
-        

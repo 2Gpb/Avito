@@ -7,6 +7,8 @@
 
 protocol SearchBusinessLogic {
     func loadStart()
+    func loadSelectCategory()
+    func loadPriceSelector()
 }
 
 protocol SearchPresentationLogic {
@@ -14,5 +16,6 @@ protocol SearchPresentationLogic {
 }
 
 protocol SearchRouterLogic {
-    
+    func routeToSelectCategory()
+    func routeToPriceSelector()
 }

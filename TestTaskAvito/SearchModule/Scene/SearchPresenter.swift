@@ -6,13 +6,26 @@
 //
 
 final class SearchPresenter: SearchPresentationLogic {
+    // MARK: - Variables
     weak var view: SearchViewController?
     
+    // MARK: - Methods
     func presentStart() {
         view?.displayStart()
     }
 }
 
+// MARK: - SearchRouterLogic
 extension SearchPresenter: SearchRouterLogic {
+    func routeToSelectCategory() {
+        let bottomSheetVC = CategoryAssembly.build()
+        bottomSheetVC.modalPresentationStyle = .pageSheet
+        view?.present(bottomSheetVC, animated: true)
+    }
     
+    func routeToPriceSelector() {
+        let bottomSheetVC = PriceAssembly.build()
+        bottomSheetVC.modalPresentationStyle = .pageSheet
+        view?.present(bottomSheetVC, animated: true)
+    }
 }

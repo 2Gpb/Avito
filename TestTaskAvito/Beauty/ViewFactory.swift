@@ -8,6 +8,9 @@
 import UIKit
 
 final class ViewFactory {
+    // MARK: - Singleton
+    static let shared = ViewFactory()
+    
     // MARK: - UILabel
     func setUpLabel(
         label: UILabel,
@@ -27,9 +30,9 @@ final class ViewFactory {
     func setUpButton(
         button: UIButton,
         title: String,
-        font: UIFont = TextStyle.bodySmall.font,
-        titleColor: UIColor,
-        backgroundColor: UIColor,
+        font: UIFont = TextStyle.bodySmallMedium.font,
+        titleColor: UIColor = UIColor(color: .base80),
+        backgroundColor: UIColor = UIColor(color: .base0),
         cornerRadius: CGFloat = 16
     ) -> UIButton {
         button.setTitle(title, for: .normal)
@@ -45,7 +48,7 @@ final class ViewFactory {
     // MARK: - UITextField
     func setUpTextField(
         textField: UITextField,
-        placeholder: String,
+        placeholder: String = "",
         placeholderColor: UIColor = UIColor(color: .base10),
         font: UIFont = TextStyle.bodySmallMedium.font,
         textColor: UIColor = UIColor(color: .base0),

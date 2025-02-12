@@ -6,13 +6,24 @@
 //
 
 final class SearchInteractor: SearchBusinessLogic {
+    // MARK: - Private fields
     private let presenter: SearchPresentationLogic & SearchRouterLogic
     
+    // MARK: - Lifecycle
     init(presenter: SearchPresentationLogic & SearchRouterLogic) {
         self.presenter = presenter
     }
     
+    // MARK: - Methods
     func loadStart() {
         presenter.presentStart()
+    }
+    
+    func loadSelectCategory() {
+        presenter.routeToSelectCategory()
+    }
+    
+    func loadPriceSelector() {
+        presenter.routeToPriceSelector()
     }
 }
