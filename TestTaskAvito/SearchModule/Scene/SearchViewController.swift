@@ -18,13 +18,21 @@ final class SearchViewController: UIViewController {
             static let placeholder: String = "Search"
             static let topOffset: CGFloat = 8
             static let horizontalOffset: CGFloat = 16
-            static let leftViewWidth: CGFloat = 48
+            static let leftViewWidth: CGFloat = 40
             static let leftViewHeight: CGFloat = 16
-            static let leftViewImageOffset: CGRect = CGRect(x: 23, y: 0, width: 17.4, height: 16)
+            static let leftViewImageOffset: CGRect = CGRect(x: 18, y: 0, width: 17, height: 16)
             static let leftImage: UIImage? = UIImage(
                 systemName: "magnifyingglass",
                 withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)
             )
+            
+            static let rightViewWidth: CGFloat = 40
+            static let rightViewHeight: CGFloat = 20
+            static let rightImage: UIImage? = UIImage(
+                systemName: "xmark",
+                withConfiguration: UIImage.SymbolConfiguration(weight: .bold)
+            )
+            static let clearButtonFrame: CGRect = CGRect(x: 10, y: 3, width: 14, height: 14)
         }
         
         enum Collection {
@@ -36,6 +44,19 @@ final class SearchViewController: UIViewController {
             static let productsHeight: CGFloat = 262
             static let filterEmptySpacing: CGFloat = 32
             static let productEmptySpacing: CGFloat = 44
+        }
+        
+        enum CancelButton {
+            static let title: String = "Cancel"
+            static let backgroundColor: UIColor = .clear
+            static let topOffset: CGFloat = 8
+            static let rightOffset: CGFloat = 16
+            static let width: CGFloat = 70
+        }
+        
+        enum Table {
+            static let topOffset: CGFloat = 12
+            static let heightCell: CGFloat = 55
         }
     }
     
@@ -50,12 +71,17 @@ final class SearchViewController: UIViewController {
     // MARK: - UI Components
     private let factory: ViewFactory = ViewFactory()
     private var searchTextField: UITextField = UITextField()
+    private let clearSearchTextFieldbutton: UIButton = UIButton(type: .system)
     private var searchTextFieldRightConstarint: NSLayoutConstraint?
-    private let searchTextFieldLeftView: UIImageView = UIImageView()
+    private let leftViewSearchTextField: UIImageView = UIImageView()
+    private let rightViewSearchTextField: UIImageView = UIImageView()
     private let collection: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewFlowLayout()
     )
+    
+    private var cancelButton: UIButton = UIButton(type: .system)
+    private let searchHistoryTable: UITableView = UITableView()
     
     // MARK: - Lifecycle
     init(interactor: SearchBusinessLogic) {
@@ -87,22 +113,31 @@ final class SearchViewController: UIViewController {
         
         setUpSearchTextField()
         setUpProductCollection()
+        
+        setUpCancelButton()
+        setUpSearchHistoryTable()
     }
     
     private func setUpSearchTextField() {
-        searchTextFieldLeftView.image = Constant.SearchTextField.leftImage
-        searchTextFieldLeftView.tintColor = UIColor(color: .base10)
+        leftViewSearchTextField.image = Constant.SearchTextField.leftImage
+        leftViewSearchTextField.tintColor = UIColor(color: .base10)
         searchTextField = factory.setUpTextField(
             textField: searchTextField,
             placeholder: Constant.SearchTextField.placeholder,
-            leftView: setUpViewForTextField(
-                imageView: searchTextFieldLeftView,
+            leftView: setUpLeftViewForTextField(
+                imageView: leftViewSearchTextField,
                 width: Constant.SearchTextField.leftViewWidth,
                 height: Constant.SearchTextField.leftViewHeight,
                 offset: Constant.SearchTextField.leftViewImageOffset
+            ),
+            rightView: setUpRightViewForTextField(
+                imageView: Constant.SearchTextField.rightImage,
+                width: Constant.SearchTextField.rightViewWidth,
+                height: Constant.SearchTextField.rightViewHeight
             )
         )
         
+        clearSearchTextFieldbutton.isHidden = true
         searchTextField.delegate = self
         
         view.addSubview(searchTextField)
@@ -116,7 +151,7 @@ final class SearchViewController: UIViewController {
         searchTextFieldRightConstarint?.isActive = true
     }
     
-    private func setUpViewForTextField(
+    private func setUpLeftViewForTextField(
         imageView: UIImageView,
         width: CGFloat,
         height: CGFloat,
@@ -125,6 +160,24 @@ final class SearchViewController: UIViewController {
         let leftView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         leftView.addSubview(imageView)
         imageView.frame = offset
+        return leftView
+    }
+    
+    private func setUpRightViewForTextField(
+        imageView: UIImage?,
+        width: CGFloat,
+        height: CGFloat
+    ) -> UIView {
+        let leftView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
+        clearSearchTextFieldbutton.setImage(imageView, for: .normal)
+        clearSearchTextFieldbutton.addTarget(
+                self,
+                action: #selector(clearSearchTextField),
+                for: .touchUpInside
+            )
+        
+        leftView.addSubview(clearSearchTextFieldbutton)
+        clearSearchTextFieldbutton.frame = Constant.SearchTextField.clearButtonFrame
         return leftView
     }
     
@@ -146,6 +199,105 @@ final class SearchViewController: UIViewController {
         collection.pinTop(to: searchTextField.bottomAnchor, Constant.Collection.topOffset)
         collection.pinHorizontal(to: view)
         collection.pinBottom(to: view)
+    }
+    
+    private func setUpCancelButton() {
+        cancelButton = factory.setUpButton(
+            button: cancelButton,
+            title: Constant.CancelButton.title,
+            font: TextStyle.bodySmallMedium.font,
+            titleColor: UIColor(color: .lightBlue),
+            backgroundColor: Constant.CancelButton.backgroundColor
+        )
+        
+        cancelButton.isHidden = true
+        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+        
+        view.addSubview(cancelButton)
+        cancelButton.pinTop(to: view.safeAreaLayoutGuide.topAnchor, Constant.CancelButton.topOffset)
+        cancelButton.pinRight(to: view, Constant.CancelButton.rightOffset)
+        cancelButton.setWidth(Constant.CancelButton.width)
+    }
+    
+    private func setUpSearchHistoryTable() {
+        searchHistoryTable.delegate = self
+        searchHistoryTable.dataSource = self
+        searchHistoryTable.backgroundColor = UIColor(color: .base70)
+        searchHistoryTable.isHidden = true
+        searchHistoryTable.separatorStyle = .none
+        searchHistoryTable.register(SearchQueryCell.self, forCellReuseIdentifier: SearchQueryCell.reuseId)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        searchHistoryTable.addGestureRecognizer(tapGesture)
+        
+        view.addSubview(searchHistoryTable)
+        searchHistoryTable.pinTop(to: searchTextField.bottomAnchor, Constant.Table.topOffset)
+        searchHistoryTable.pinHorizontal(to: view)
+        searchHistoryTable.pinBottom(to: view)
+    }
+    
+    // MARK: - Actions
+    @objc
+    private func cancelButtonTapped() {
+        guard let rightConstraint = searchTextFieldRightConstarint else { return }
+        rightConstraint.constant = -16
+        view.layoutIfNeeded()
+        view.backgroundColor = UIColor(color: .base80)
+        searchTextField.resignFirstResponder()
+        cancelButton.isHidden = true
+        searchHistoryTable.isHidden = true
+        collection.isHidden = false
+        searchTextField.text = nil
+        leftViewSearchTextField.tintColor = UIColor(color: .base10)
+    }
+    
+    @objc
+    private func dismissKeyboard() {
+        clearSearchTextFieldbutton.isHidden = true
+        searchTextField.resignFirstResponder()
+    }
+    
+    @objc
+    private func clearSearchTextField() {
+        searchTextField.text = nil
+        leftViewSearchTextField.tintColor = UIColor(color: .base10)
+        clearSearchTextFieldbutton.isHidden = true
+    }
+}
+
+// MARK: - UITextFieldDelegate
+extension SearchViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField.text != "" && textField.text != nil {
+            clearSearchTextFieldbutton.isHidden = false
+        }
+        
+        view.backgroundColor = UIColor(color: .base70)
+        
+        guard let rightConstraint = searchTextFieldRightConstarint else { return }
+        rightConstraint.constant = -94
+        view.layoutIfNeeded()
+        
+        collection.isHidden = true
+        cancelButton.isHidden = false
+        searchHistoryTable.isHidden = false
+    }
+    
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
+        clearSearchTextFieldbutton.isHidden = false
+        leftViewSearchTextField.tintColor = UIColor(color: .base0)
+        let newText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
+        if newText.isEmpty {
+            leftViewSearchTextField.tintColor = UIColor(color: .base10)
+            clearSearchTextFieldbutton.isHidden = true
+        }
+        
+        return true
     }
 }
 
@@ -255,26 +407,32 @@ extension SearchViewController: UICollectionViewDataSource {
     }
 }
 
-// MARK: - UITextFieldDelegate
-extension SearchViewController: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        
-        guard let rightConstraint = searchTextFieldRightConstarint else { return }
-        rightConstraint.constant = -50
-        view.layoutIfNeeded()
+// MARK: - UITableViewDelegate
+extension SearchViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        Constant.Table.heightCell
     }
     
-    func textField(
-        _ textField: UITextField,
-        shouldChangeCharactersIn range: NSRange,
-        replacementString string: String
-    ) -> Bool {
-        searchTextFieldLeftView.tintColor = UIColor(color: .base0)
-        let newText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
-        if newText.isEmpty {
-            searchTextFieldLeftView.tintColor = UIColor(color: .base10)
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        clearSearchTextFieldbutton.isHidden = true
+        searchTextField.resignFirstResponder()
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension SearchViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        3
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = searchHistoryTable.dequeueReusableCell(
+            withIdentifier: SearchQueryCell.reuseId
+        ) as? SearchQueryCell else {
+            return UITableViewCell()
         }
         
-        return true
+        cell.configure(query: "Sandals")
+        return cell
     }
 }
