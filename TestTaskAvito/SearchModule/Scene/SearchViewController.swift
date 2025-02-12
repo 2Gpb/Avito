@@ -109,6 +109,7 @@ final class SearchViewController: UIViewController {
     // MARK: - SetUp
     private func setUp() {
         view.backgroundColor = UIColor(color: .base80)
+        navigationController?.setNavigationBarHidden(true, animated: true)
         
         setUpSearchTextField()
         setUpProductCollection()
@@ -138,6 +139,7 @@ final class SearchViewController: UIViewController {
         
         clearSearchTextFieldButton.isHidden = true
         searchTextField.delegate = self
+        searchTextField.keyboardType = .default
         
         view.addSubview(searchTextField)
         searchTextField.pinTop(to: view.safeAreaLayoutGuide.topAnchor, Constant.SearchTextField.topOffset)
@@ -269,6 +271,7 @@ final class SearchViewController: UIViewController {
 // MARK: - UITextFieldDelegate
 extension SearchViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.becomeFirstResponder()
         if textField.text != "" && textField.text != nil {
             clearSearchTextFieldButton.isHidden = false
         }
@@ -303,6 +306,10 @@ extension SearchViewController: UITextFieldDelegate {
 
 // MARK: - UICollectionViewDelegate
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        interactor.loadProductCard()
+    }
+    
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,

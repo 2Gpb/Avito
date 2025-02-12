@@ -50,8 +50,8 @@ final class FiltersViewCell: UICollectionViewCell {
     // MARK: - UI Components
     private var categoryTextField: UITextField = UITextField()
     private var priceTextField: UITextField = UITextField()
-    private var showButton: UIButton = UIButton()
-    private var resetButton: UIButton = UIButton()
+    private var showButton: UIButton = UIButton(type: .system)
+    private var resetButton: UIButton = UIButton(type: .system)
     
     // MARK: - Lifecycle
     override init(frame: CGRect) {
