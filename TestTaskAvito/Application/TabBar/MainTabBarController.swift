@@ -17,7 +17,7 @@ final class MainTabBarController: UITabBarController {
         }
         
         enum Cart {
-            static let title: String = "Cart"
+            static let title: String = "Shopping list"
             static let imageName: String = "cart.fill"
             static let tag: Int = 2
         }
@@ -54,14 +54,14 @@ final class MainTabBarController: UITabBarController {
             tag: Constant.Search.tag
         )
         
-        let cartViewController = createNavController(
-            rootViewController: UIViewController(),
+        let shoppingListViewController = createNavController(
+            rootViewController: ShoppingListAssembly.build(),
             title: Constant.Cart.title,
             imageName: Constant.Cart.imageName,
             tag: Constant.Cart.tag
         )
         
-        setViewControllers([searchViewController, cartViewController], animated: false)
+        setViewControllers([searchViewController, shoppingListViewController], animated: false)
     }
     
     func createNavController(
