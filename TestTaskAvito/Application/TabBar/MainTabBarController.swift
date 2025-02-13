@@ -21,6 +21,11 @@ final class MainTabBarController: UITabBarController {
             static let imageName: String = "cart.fill"
             static let tag: Int = 2
         }
+        
+        enum Border {
+            static let origin: CGPoint = CGPoint(x: 0, y: 0)
+            static let height: CGFloat = 1
+        }
     }
     
     // MARK: - Lifecycle
@@ -31,6 +36,7 @@ final class MainTabBarController: UITabBarController {
     
     // MARK: - SetUp
     private func setUp() {
+        addTabBarTopBorder()
         setUpAppearance()
         setUpControllers()
     }
@@ -64,7 +70,7 @@ final class MainTabBarController: UITabBarController {
         setViewControllers([searchViewController, shoppingListViewController], animated: false)
     }
     
-    func createNavController(
+    private func createNavController(
         rootViewController: UIViewController,
         title: String,
         imageName: String,
@@ -78,5 +84,16 @@ final class MainTabBarController: UITabBarController {
         )
         
         return navController
+    }
+    
+    private func addTabBarTopBorder() {
+        let borderLayer = CALayer()
+        borderLayer.frame = CGRect(
+            origin: Constant.Border.origin,
+            size: CGSize(width: tabBar.frame.width, height: Constant.Border.height)
+        )
+        
+        borderLayer.backgroundColor = UIColor(color: .base30).cgColor
+        tabBar.layer.addSublayer(borderLayer)
     }
 }

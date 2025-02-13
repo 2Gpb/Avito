@@ -13,13 +13,43 @@ final class ShoppingListViewController: UIViewController {
         enum Error {
             static let message = "init(coder:) has not been implemented"
         }
+        
+        enum Title {
+            static let text = "Shopping list"
+            static let topOffset: CGFloat = 14
+        }
+        
+        enum ShareButton {
+            static let image: UIImage? = UIImage(systemName: "square.and.arrow.up")
+            static let topOffset: CGFloat = 4
+            static let rightOffset: CGFloat = 6
+            static let size: CGFloat = 44
+        }
+        
+        enum ClearButton {
+            static let title: String = "Clear all"
+            static let leftoffset: CGFloat = 16
+            static let bottomOffset: CGFloat = 16
+            static let emptySpace: CGFloat = 44
+        }
+        
+        enum BuyButton {
+            static let title: String = "Buy"
+            static let rightoffset: CGFloat = 16
+            static let bottomOffset: CGFloat = 16
+            static let emptySpace: CGFloat = 44
+        }
     }
     
     // MARK: - Private fields
     private let interactor: ShoppingListBusinessLogic
     
     //MARK: - UI Components
-    
+    private var titleLabel: UILabel = UILabel()
+    private let shareButton: UIButton = UIButton(type: .system)
+    private var buyButton: UIButton = UIButton(type: .system)
+    private var clearButton: UIButton = UIButton(type: .system)
+    private let collection: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     // MARK: - Lifecycle
     init(interactor: ShoppingListBusinessLogic) {
@@ -34,6 +64,80 @@ final class ShoppingListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
+        setUp()
+    }
+    
+    // MARK: - SetUp
+    private func setUp() {
+        view.backgroundColor = UIColor(color: .base70)
+        navigationController?.setNavigationBarHidden(true, animated: true)
+        
+        setUpTitle()
+        setUpShareButton()
+        setUpClearButton()
+        setUpBuyButton()
+    }
+    
+    private func setUpTitle() {
+        titleLabel = ViewFactory.shared.setUpLabel(
+            label: titleLabel,
+            text: Constant.Title.text,
+            font: TextStyle.titleLarge.font,
+            textColor: UIColor(color: .base0)
+        )
+        
+        view.addSubview(titleLabel)
+        titleLabel.pinTop(to: view.safeAreaLayoutGuide.topAnchor, Constant.Title.topOffset)
+        titleLabel.pinCenterX(to: view)
+    }
+    
+    private func setUpShareButton() {
+        shareButton.setImage(Constant.ShareButton.image, for: .normal)
+        shareButton.tintColor = UIColor(color: .base0)
+        shareButton.backgroundColor = .clear
+        shareButton.addTarget(self, action: #selector(handleShare), for: .touchUpInside)
+        
+        view.addSubview(shareButton)
+        shareButton.pinTop(to: view.safeAreaLayoutGuide.topAnchor, Constant.ShareButton.topOffset)
+        shareButton.pinRight(to: view, Constant.ShareButton.rightOffset)
+        shareButton.setWidth(Constant.ShareButton.size)
+        shareButton.setHeight(Constant.ShareButton.size)
+    }
+    
+    private func setUpClearButton() {
+        clearButton = ViewFactory.shared.setUpButton(
+            button: clearButton,
+            title: Constant.ClearButton.title,
+            titleColor: UIColor(color: .base0),
+            backgroundColor: UIColor(color: .base50)
+        )
+        
+        view.addSubview(clearButton)
+        clearButton.pinLeft(to: view, Constant.ClearButton.leftoffset)
+        clearButton.pinBottom(to: view.safeAreaLayoutGuide.bottomAnchor, Constant.ClearButton.bottomOffset)
+        clearButton.setWidth((view.frame.width - Constant.ClearButton.emptySpace) / CGFloat(2))
+    }
+    
+    private func setUpBuyButton() {
+        buyButton = ViewFactory.shared.setUpButton(
+            button: buyButton,
+            title: Constant.BuyButton.title
+        )
+        
+        view.addSubview(buyButton)
+        buyButton.pinRight(to: view, Constant.BuyButton.rightoffset)
+        buyButton.pinBottom(to: view.safeAreaLayoutGuide.bottomAnchor, Constant.BuyButton.bottomOffset)
+        buyButton.setWidth((view.frame.width - Constant.BuyButton.emptySpace) / CGFloat(2))
+    }
+    
+    // MARK: - Actions
+    @objc
+    private func handleShare() {
+        let activityViewController: UIActivityViewController = UIActivityViewController(
+            activityItems: ["test2"],
+            applicationActivities: nil
+        )
+        
+        interactor.shareCart(shareSheet: activityViewController)
     }
 }

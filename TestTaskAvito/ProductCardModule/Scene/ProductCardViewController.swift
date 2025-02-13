@@ -32,7 +32,7 @@ final class ProductCardViewController: UIViewController {
         
         enum ProductImageView {
             static let topOffset: CGFloat = 14
-            static let heightDivider: CGFloat = 1.37
+            static let heightDivider: CGFloat = 1.5
         }
         
         enum Stack {
@@ -56,7 +56,7 @@ final class ProductCardViewController: UIViewController {
         
         enum AddButton {
             static let title: String = "Add to shopping list"
-            static let topOffset: CGFloat = 24
+            static let topOffset: CGFloat = 20
             static let horizontalOffset: CGFloat = 16
         }
          
@@ -188,16 +188,12 @@ final class ProductCardViewController: UIViewController {
             textColor: UIColor(color: .base0)
         )
         
-        priceLabel.numberOfLines = Constant.Labels.pricenumberOfLines
-        
         nameLabel = ViewFactory.shared.setUpLabel(
             label: nameLabel,
             text: "Futuristic Holographic Soccer Cleats",
             font: TextStyle.productTitle.font,
             textColor: UIColor(color: .base5)
         )
-        
-        nameLabel.numberOfLines = Constant.Labels.nameNumberOfLines
         
         descriptionLabel = ViewFactory.shared.setUpLabel(
             label: descriptionLabel,
@@ -206,6 +202,8 @@ final class ProductCardViewController: UIViewController {
             textColor: UIColor(color: .description)
         )
         
+        priceLabel.numberOfLines = Constant.Labels.pricenumberOfLines
+        nameLabel.numberOfLines = Constant.Labels.nameNumberOfLines
         descriptionLabel.numberOfLines = Constant.Labels.descriptionNumberOfLines
         
         [priceLabel, nameLabel, descriptionLabel].forEach { view in

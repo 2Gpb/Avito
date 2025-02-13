@@ -242,16 +242,27 @@ final class SearchViewController: UIViewController {
     // MARK: - Actions
     @objc
     private func cancelButtonTapped() {
-        guard let rightConstraint = searchTextFieldRightConstarint else { return }
-        rightConstraint.constant = -16
-        view.layoutIfNeeded()
         view.backgroundColor = UIColor(color: .base80)
         searchTextField.resignFirstResponder()
+        searchTextField.text = nil
+        leftViewSearchTextField.tintColor = UIColor(color: .base10)
+        
+        searchTextFieldRightConstarint?.isActive = false
+        searchTextFieldRightConstarint = searchTextField.trailingAnchor
+            .constraint(
+                equalTo: view.trailingAnchor,
+                constant: -Constant.SearchTextField.horizontalOffset
+            )
+        
+        searchTextFieldRightConstarint?.isActive = true
+
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+        
         cancelButton.isHidden = true
         searchHistoryTable.isHidden = true
         collection.isHidden = false
-        searchTextField.text = nil
-        leftViewSearchTextField.tintColor = UIColor(color: .base10)
     }
     
     @objc
@@ -271,19 +282,28 @@ final class SearchViewController: UIViewController {
 // MARK: - UITextFieldDelegate
 extension SearchViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        view.backgroundColor = UIColor(color: .base70)
         textField.becomeFirstResponder()
+        
         if textField.text != "" && textField.text != nil {
             clearSearchTextFieldButton.isHidden = false
         }
+    
+        searchTextFieldRightConstarint?.isActive = false
+        searchTextFieldRightConstarint = searchTextField.trailingAnchor.constraint(
+            equalTo: cancelButton.leadingAnchor,
+            constant: -8
+        )
         
-        view.backgroundColor = UIColor(color: .base70)
+        searchTextFieldRightConstarint?.isActive = true
         
-        guard let rightConstraint = searchTextFieldRightConstarint else { return }
-        rightConstraint.constant = -94
-        view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            self?.view.layoutIfNeeded()
+        }, completion: { [weak self] _ in
+            self?.cancelButton.isHidden = false
+        })
         
         collection.isHidden = true
-        cancelButton.isHidden = false
         searchHistoryTable.isHidden = false
     }
     
