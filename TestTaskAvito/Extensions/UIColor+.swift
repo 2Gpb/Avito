@@ -20,7 +20,7 @@ enum Color: String, CaseIterable {
     case base70 = "141414"
     case base80 = "0A0A0A"
     
-    
+    case description = "7F7F7F"
     // Accent colours
     case lightBlue = "01A9FF"
     case blue = "4A40FF"
