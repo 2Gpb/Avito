@@ -23,16 +23,16 @@ final class SearchViewController: UIViewController {
             static let leftViewImageOffset: CGRect = CGRect(x: 18, y: 0, width: 17, height: 16)
             static let leftImage: UIImage? = UIImage(
                 systemName: "magnifyingglass",
-                withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)
+                withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold, scale: .small)
             )
             
             static let rightViewWidth: CGFloat = 40
             static let rightViewHeight: CGFloat = 20
             static let rightImage: UIImage? = UIImage(
                 systemName: "xmark",
-                withConfiguration: UIImage.SymbolConfiguration(weight: .bold)
+                withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold, scale: .small)
             )
-            static let clearButtonFrame: CGRect = CGRect(x: 10, y: 3, width: 15, height: 14)
+            static let clearButtonFrame: CGRect = CGRect(x: 10, y: 0, width: 20, height: 20)
         }
         
         enum Collection {
@@ -109,6 +109,7 @@ final class SearchViewController: UIViewController {
     // MARK: - SetUp
     private func setUp() {
         view.backgroundColor = UIColor(color: .base80)
+        navigationController?.setNavigationBarHidden(true, animated: true)
         
         setUpSearchTextField()
         setUpProductCollection()
@@ -138,6 +139,9 @@ final class SearchViewController: UIViewController {
         
         clearSearchTextFieldButton.isHidden = true
         searchTextField.delegate = self
+        searchTextField.keyboardType = .default
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(openSearch))
+        searchTextField.addGestureRecognizer(gesture)
         
         view.addSubview(searchTextField)
         searchTextField.pinTop(to: view.safeAreaLayoutGuide.topAnchor, Constant.SearchTextField.topOffset)
@@ -167,7 +171,7 @@ final class SearchViewController: UIViewController {
         width: CGFloat,
         height: CGFloat
     ) -> UIView {
-        let leftView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
+        let rightView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         clearSearchTextFieldButton.setImage(imageView, for: .normal)
         clearSearchTextFieldButton.tintColor = UIColor(color: .base0)
         clearSearchTextFieldButton.addTarget(
@@ -176,9 +180,9 @@ final class SearchViewController: UIViewController {
                 for: .touchUpInside
             )
         
-        leftView.addSubview(clearSearchTextFieldButton)
+        rightView.addSubview(clearSearchTextFieldButton)
         clearSearchTextFieldButton.frame = Constant.SearchTextField.clearButtonFrame
-        return leftView
+        return rightView
     }
     
     private func setUpProductCollection() {
@@ -239,17 +243,56 @@ final class SearchViewController: UIViewController {
     
     // MARK: - Actions
     @objc
+    private func openSearch() {
+        view.backgroundColor = UIColor(color: .base70)
+        searchTextField.becomeFirstResponder()
+        
+        if searchTextField.text != "" && searchTextField.text != nil {
+            clearSearchTextFieldButton.isHidden = false
+        }
+    
+        searchTextFieldRightConstarint?.isActive = false
+        searchTextFieldRightConstarint = searchTextField.trailingAnchor.constraint(
+            equalTo: cancelButton.leadingAnchor,
+            constant: -8
+        )
+        
+        searchTextFieldRightConstarint?.isActive = true
+        
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            self?.view.layoutIfNeeded()
+        }, completion: { [weak self] _ in
+            self?.cancelButton.isHidden = false
+        })
+        
+        collection.isHidden = true
+        searchHistoryTable.isHidden = false
+    }
+    
+    @objc
     private func cancelButtonTapped() {
-        guard let rightConstraint = searchTextFieldRightConstarint else { return }
-        rightConstraint.constant = -16
-        view.layoutIfNeeded()
         view.backgroundColor = UIColor(color: .base80)
         searchTextField.resignFirstResponder()
+        searchTextField.text = nil
+        leftViewSearchTextField.tintColor = UIColor(color: .base10)
+        
+        searchTextFieldRightConstarint?.isActive = false
+        searchTextFieldRightConstarint = searchTextField.trailingAnchor
+            .constraint(
+                equalTo: view.trailingAnchor,
+                constant: -Constant.SearchTextField.horizontalOffset
+            )
+        
+        searchTextFieldRightConstarint?.isActive = true
+
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+        
+        clearSearchTextFieldButton.isHidden = true
         cancelButton.isHidden = true
         searchHistoryTable.isHidden = true
         collection.isHidden = false
-        searchTextField.text = nil
-        leftViewSearchTextField.tintColor = UIColor(color: .base10)
     }
     
     @objc
@@ -268,22 +311,6 @@ final class SearchViewController: UIViewController {
 
 // MARK: - UITextFieldDelegate
 extension SearchViewController: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        if textField.text != "" && textField.text != nil {
-            clearSearchTextFieldButton.isHidden = false
-        }
-        
-        view.backgroundColor = UIColor(color: .base70)
-        
-        guard let rightConstraint = searchTextFieldRightConstarint else { return }
-        rightConstraint.constant = -94
-        view.layoutIfNeeded()
-        
-        collection.isHidden = true
-        cancelButton.isHidden = false
-        searchHistoryTable.isHidden = false
-    }
-    
     func textField(
         _ textField: UITextField,
         shouldChangeCharactersIn range: NSRange,
@@ -303,6 +330,10 @@ extension SearchViewController: UITextFieldDelegate {
 
 // MARK: - UICollectionViewDelegate
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        interactor.loadProductCard()
+    }
+    
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,

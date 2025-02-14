@@ -28,4 +28,8 @@ extension SearchPresenter: SearchRouterLogic {
         bottomSheetVC.modalPresentationStyle = .pageSheet
         view?.present(bottomSheetVC, animated: true)
     }
+    
+    func routeToProductCard() {
+        view?.navigationController?.pushViewController(ProductCardAssembly.build(), animated: true)
+    }
 }

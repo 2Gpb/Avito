@@ -88,4 +88,69 @@ final class ViewFactory {
         imageView.center = leftView.center
         return leftView
     }
+    
+    // MARK: - Counter
+    func setUpCounter(
+        counter: UIView,
+        counterLabel: UILabel,
+        target: Any,
+        minusButtonTapped: Selector,
+        plusButtonTapped: Selector,
+        verticalInsets: CGFloat,
+        horizontalInsets: CGFloat,
+        buttonSize: CGFloat,
+        buttonImageScale: UIImage.SymbolScale
+    ) -> UIView {
+        let minusButton: UIButton = UIButton()
+        let plusButton: UIButton = UIButton()
+        
+        counter.layer.cornerRadius = 16
+        counter.backgroundColor = UIColor(color: .base50)
+        
+        minusButton.tintColor = UIColor(color: .base0)
+        minusButton.addTarget(target, action: minusButtonTapped, for: .touchUpInside)
+        minusButton.setImage(UIImage(
+                systemName: "minus",
+                withConfiguration: UIImage.SymbolConfiguration(
+                    pointSize: 18,
+                    weight: .semibold,
+                    scale: buttonImageScale
+                )
+            ),
+            for: .normal
+        )
+        
+        plusButton.tintColor = UIColor(color: .base0)
+        plusButton.addTarget(target, action: plusButtonTapped, for: .touchUpInside)
+        plusButton.setImage(UIImage(
+                systemName: "plus",
+                withConfiguration: UIImage.SymbolConfiguration(
+                    pointSize: 18,
+                    weight: .semibold,
+                    scale: buttonImageScale
+                )
+            ),
+            for: .normal
+        )
+        
+        [counterLabel, plusButton, minusButton].forEach { view in counter.addSubview(view) }
+        
+        minusButton.pinVertical(to: counter, verticalInsets)
+        minusButton.pinLeft(to: counter, horizontalInsets)
+        minusButton.setWidth(buttonSize)
+        minusButton.setHeight(buttonSize)
+        
+        plusButton.pinVertical(to: counter, verticalInsets)
+        plusButton.pinRight(to: counter, horizontalInsets)
+        plusButton.setWidth(buttonSize)
+        plusButton.setHeight(buttonSize)
+        
+        counterLabel.pinLeft(to: minusButton.trailingAnchor, 0)
+        counterLabel.pinRight(to: plusButton.leadingAnchor, 0)
+        counterLabel.setWidth(36)
+        counterLabel.pinCenterX(to: counter)
+        counterLabel.pinCenterY(to: counter)
+        
+        return counter
+    }
 }

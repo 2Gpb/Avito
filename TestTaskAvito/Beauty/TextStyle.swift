@@ -33,6 +33,8 @@ enum TextStyle {
 
     case bodySmall // 16pt, Regular
     case bodySmallMedium // 16pt, Medium
+    
+    case tabSmall // 12pt, Regular
 }
 
 extension TextStyle {
@@ -54,6 +56,8 @@ extension TextStyle {
             return FontDescription(font: .regular, size: 16)
         case .bodySmallMedium:
             return FontDescription(font: .medium, size: 16)
+        case .tabSmall:
+            return FontDescription(font: .regular, size: 12)
         }
     }
 }

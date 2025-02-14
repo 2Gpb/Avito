@@ -9,6 +9,7 @@ protocol SearchBusinessLogic {
     func loadStart()
     func loadSelectCategory()
     func loadPriceSelector()
+    func loadProductCard()
 }
 
 protocol SearchPresentationLogic {
@@ -18,4 +19,5 @@ protocol SearchPresentationLogic {
 protocol SearchRouterLogic {
     func routeToSelectCategory()
     func routeToPriceSelector()
+    func routeToProductCard()
 }

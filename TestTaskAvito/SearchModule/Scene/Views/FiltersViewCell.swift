@@ -19,7 +19,15 @@ final class FiltersViewCell: UICollectionViewCell {
         }
         
         enum TextFields {
-            static let rightImage: UIImage? = UIImage(systemName: "chevron.down")
+            static let rightImage: UIImage? = UIImage(
+                systemName: "chevron.down",
+                withConfiguration: UIImage.SymbolConfiguration(
+                    pointSize: 18,
+                    weight: .medium,
+                    scale: .default
+                )
+            )
+            
             static let categoryPlaceholder: String = "Category"
             static let pricePlaceholder: String = "Price"
             static let offset: CGFloat = 8
@@ -50,8 +58,8 @@ final class FiltersViewCell: UICollectionViewCell {
     // MARK: - UI Components
     private var categoryTextField: UITextField = UITextField()
     private var priceTextField: UITextField = UITextField()
-    private var showButton: UIButton = UIButton()
-    private var resetButton: UIButton = UIButton()
+    private var showButton: UIButton = UIButton(type: .system)
+    private var resetButton: UIButton = UIButton(type: .system)
     
     // MARK: - Lifecycle
     override init(frame: CGRect) {
@@ -82,6 +90,8 @@ final class FiltersViewCell: UICollectionViewCell {
             rightView: views.rightView
         )
         
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(openCategory))
+        categoryTextField.addGestureRecognizer(gesture)
         categoryTextField.delegate = self
         
         contentView.addSubview(categoryTextField)
@@ -100,8 +110,10 @@ final class FiltersViewCell: UICollectionViewCell {
             rightView: views.rightView
         )
         
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(openPriceRange))
+        priceTextField.addGestureRecognizer(gesture)
         priceTextField.delegate = self
-        
+    
         contentView.addSubview(priceTextField)
         priceTextField.pinTop(to: contentView)
         priceTextField.pinRight(to: contentView)
@@ -149,20 +161,24 @@ final class FiltersViewCell: UICollectionViewCell {
         showButton.pinLeft(to: contentView)
         showButton.pinRight(to: resetButton.leadingAnchor, Constant.Buttons.rightOffset)
     }
+    
+    // MARK: - Actions
+    @objc
+    private func openCategory() {
+        categoryTextField.resignFirstResponder()
+        openSelectCategory?()
+    }
+    
+    @objc
+    private func openPriceRange() {
+        priceTextField.resignFirstResponder()
+        openPriceSelector?()
+    }
 }
 
 // MARK: - UITextFieldDelegate
 extension FiltersViewCell: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        if textField == categoryTextField {
-            textField.resignFirstResponder()
-            openSelectCategory?()
-            return false
-        } else {
-            textField.resignFirstResponder()
-            openPriceSelector?()
-            return false
-        }
-        
+        return false
     }
 }

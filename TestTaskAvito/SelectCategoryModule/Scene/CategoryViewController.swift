@@ -28,13 +28,17 @@ final class CategoryViewController: UIViewController {
         }
         
         enum CloseButton {
-            static let bottomOffset: CGFloat = 17
-            static let leftOffset: CGFloat = 16
-            static let width: CGFloat = 20
-            static let height: CGFloat = 19
+            static let bottomOffset: CGFloat = 4
+            static let leftOffset: CGFloat = 5
+            static let width: CGFloat = 44
+            static let height: CGFloat = 44
             static let image: UIImage? = UIImage(
                 systemName: "xmark",
-                withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)
+                withConfiguration: UIImage.SymbolConfiguration(
+                    pointSize: 18,
+                    weight: .semibold,
+                    scale: .default
+                )
             )
         }
         
