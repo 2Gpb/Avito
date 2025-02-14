@@ -96,10 +96,11 @@ final class ProductCardViewController: UIViewController {
     // MARK: - UI Components
     private let backButton: UIButton = UIButton(type: .system)
     private let shareButton: UIButton = UIButton(type: .system)
-    private let productImageView: UIImageView = UIImageView()
+    private let productImageView: AsyncImageView = AsyncImageView()
     private var priceLabel: UILabel = UILabel()
     private var nameLabel: UILabel = UILabel()
     private var descriptionLabel: UILabel = UILabel()
+    private let categoryWrap: UIView = UIView()
     private var categoryLabel: UILabel = UILabel()
     private let stackView: UIStackView = UIStackView()
     private var addButton: UIButton = UIButton(type: .system)
@@ -121,6 +122,21 @@ final class ProductCardViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        interactor.loadStart()
+    }
+    
+    // MARK: - Methods
+    func displayStart(model: ProductCardModel) {
+        priceLabel.text = model.price
+        nameLabel.text = model.title
+        descriptionLabel.text = model.description
+        categoryLabel.text = model.category
+        productImageView.loadImage(path: model.imageAddress)
+        categoryWrap.isHidden = false
     }
     
     // MARK: - SetUp
@@ -163,7 +179,9 @@ final class ProductCardViewController: UIViewController {
     }
     
     private func setUpProductImageView() {
-        productImageView.backgroundColor = .gray
+        productImageView.backgroundColor = UIColor(color: .base10)
+        productImageView.clipsToBounds = true
+        productImageView.set(contentMode: .scaleAspectFit)
         
         view.addSubview(productImageView)
         productImageView.pinTop(to: backButton.bottomAnchor, Constant.ProductImageView.topOffset)
@@ -185,21 +203,18 @@ final class ProductCardViewController: UIViewController {
     private func setUpInfoLabels() {
         priceLabel = ViewFactory.shared.setUpLabel(
             label: priceLabel,
-            text: "39$",
             font: TextStyle.priceLarge.font,
             textColor: UIColor(color: .base0)
         )
         
         nameLabel = ViewFactory.shared.setUpLabel(
             label: nameLabel,
-            text: "Futuristic Holographic Soccer Cleats",
             font: TextStyle.productTitle.font,
             textColor: UIColor(color: .base5)
         )
         
         descriptionLabel = ViewFactory.shared.setUpLabel(
             label: descriptionLabel,
-            text: "Step onto the field and stand out from the crowd with these eye-catching holographic soccer cleats. Designed for the modern player, these cleats feature...",
             font: TextStyle.body.font,
             textColor: UIColor(color: .description)
         )
@@ -214,25 +229,24 @@ final class ProductCardViewController: UIViewController {
     }
     
     private func setUpCategoryView() {
-        let wrap: UIView = UIView()
-        wrap.backgroundColor = UIColor(color: .base50)
-        wrap.layer.cornerRadius = Constant.CategoryView.cornerRadius
+        categoryWrap.backgroundColor = UIColor(color: .base50)
+        categoryWrap.layer.cornerRadius = Constant.CategoryView.cornerRadius
         
         categoryLabel = ViewFactory.shared.setUpLabel(
             label: categoryLabel,
-            text: "Shoes",
             font: TextStyle.body.font,
             textColor: UIColor(color: .base0)
         )
         
+        categoryWrap.isHidden = true
         categoryLabel.numberOfLines = Constant.CategoryView.numberOfLines
         
-        wrap.addSubview(categoryLabel)
-        view.addSubview(wrap)
+        categoryWrap.addSubview(categoryLabel)
+        view.addSubview(categoryWrap)
     
-        categoryLabel.pinVertical(to: wrap, Constant.CategoryView.verticalOffset)
-        categoryLabel.pinHorizontal(to: wrap, Constant.CategoryView.horizontalOffset)
-        stackView.addArrangedSubview(wrap)
+        categoryLabel.pinVertical(to: categoryWrap, Constant.CategoryView.verticalOffset)
+        categoryLabel.pinHorizontal(to: categoryWrap, Constant.CategoryView.horizontalOffset)
+        stackView.addArrangedSubview(categoryWrap)
     }
     
     private func setUpAddButton() {
@@ -290,7 +304,7 @@ final class ProductCardViewController: UIViewController {
     @objc
     private func shareButtonTapped() {
         let activityViewController: UIActivityViewController = UIActivityViewController(
-            activityItems: ["test"],
+            activityItems: [nameLabel.text ?? "Product name", descriptionLabel.text ?? "Product description"],
             applicationActivities: nil
         )
         

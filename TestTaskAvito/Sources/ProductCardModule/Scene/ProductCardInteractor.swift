@@ -10,10 +10,17 @@ import UIKit
 final class ProductCardInteractor: ProductCardBusinessLogic {
     // MARK: - Private fields
     private let presenter: ProductCardPresentationLogic & ProductCardRouterLogic
+    private let productModel: ProductModel.Element
     
     // MARK: - Lifecycle
-    init(presenter: ProductCardPresentationLogic & ProductCardRouterLogic) {
+    init(presenter: ProductCardPresentationLogic & ProductCardRouterLogic, model: ProductModel.Element) {
         self.presenter = presenter
+        self.productModel = model
+    }
+    
+    // MARK: - Methods
+    func loadStart() {
+        presenter.presentStart(model: productModel)
     }
     
     func goBack() {

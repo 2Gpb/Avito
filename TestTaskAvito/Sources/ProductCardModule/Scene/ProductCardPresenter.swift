@@ -10,6 +10,19 @@ import UIKit
 final class ProductCardPresenter: ProductCardPresentationLogic {
     // MARK: - Variables
     weak var view: ProductCardViewController?
+    
+    // MARK: - Methods
+    func presentStart(model: ProductModel.Element) {
+        let newModel = ProductCardModel(
+            imageAddress: model.images[0],
+            price: "\(model.price)$",
+            title: model.title,
+            description: model.description,
+            category: model.category.name
+        )
+        
+        view?.displayStart(model: newModel)
+    }
 }
 
 // MARK: - ProductCardRouterLogic

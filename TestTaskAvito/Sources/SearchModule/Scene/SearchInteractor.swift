@@ -38,8 +38,8 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
         presenter.routeToPriceSelector()
     }
     
-    func loadProductCard() {
-        presenter.routeToProductCard()
+    func loadProductCard(for index: Int) {
+        presenter.routeToProductCard(with: products[index])
     }
     
     func loadProducts(

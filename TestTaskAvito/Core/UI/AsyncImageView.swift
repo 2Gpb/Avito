@@ -41,19 +41,20 @@ final class AsyncImageView: UIView {
         
         currentLoadingURL = url
         if url.scheme == "http" {
-            failedToLoadImage()
+            showWarning()
             return
         }
         
         URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
             if error != nil  {
-                self?.failedToLoadImage()
+                self?.showWarning()
                 print(error?.localizedDescription ?? "Unknown error")
                 return
             }
             
             guard let data = data, let image = UIImage(data: data) else {
-                self?.failedToLoadImage()
+                print(1)
+                self?.showWarning()
                 return
             }
             
@@ -73,8 +74,12 @@ final class AsyncImageView: UIView {
         shimmer.startShimmering()
     }
     
+    func set(contentMode: ContentMode) {
+        image.contentMode = contentMode
+    }
+    
     // MARK: - Private methods
-    private func failedToLoadImage() {
+    private func showWarning() {
         DispatchQueue.main.async { [weak self] in
             self?.image.image = Constant.Error.image
             self?.shimmer.stopShimmering()

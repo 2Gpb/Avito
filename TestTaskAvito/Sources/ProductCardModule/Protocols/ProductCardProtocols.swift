@@ -10,6 +10,7 @@ import UIKit
 protocol ProductCardBusinessLogic {
     func goBack()
     func shareProduct(shareSheet: UIActivityViewController)
+    func loadStart()
 }
 
 protocol ProductCardPresentationLogic {
@@ -19,4 +20,5 @@ protocol ProductCardPresentationLogic {
 protocol ProductCardRouterLogic {
     func popViewController()
     func present(shareSheet: UIActivityViewController)
+    func presentStart(model: ProductModel.Element)
 }

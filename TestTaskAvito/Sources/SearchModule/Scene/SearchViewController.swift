@@ -333,7 +333,7 @@ extension SearchViewController: UITextFieldDelegate {
 // MARK: - UICollectionViewDelegate
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        interactor.loadProductCard()
+        interactor.loadProductCard(for: indexPath.row)
     }
     
     func collectionView(
@@ -388,65 +388,6 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
         }
     }
 }
-
-//// MARK: - UICollectionViewDataSource
-//extension SearchViewController: UICollectionViewDataSource {
-//    func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        CollectionSection.allCases.count
-//    }
-//    
-//    func collectionView(
-//        _ collectionView: UICollectionView,
-//        numberOfItemsInSection section: Int
-//    ) -> Int {
-//        let section = CollectionSection.allCases[section]
-//        
-//        switch section {
-//        case .filters:
-//            return 1
-//        case .products:
-//            return 8
-//        }
-//    }
-//    
-//    func collectionView(
-//        _ collectionView: UICollectionView,
-//        cellForItemAt indexPath: IndexPath
-//    ) -> UICollectionViewCell {
-//        
-//        let section = CollectionSection.allCases[indexPath.section]
-//        
-//        switch section {
-//        case .filters:
-//            guard let cell = collectionView.dequeueReusableCell(
-//                withReuseIdentifier: FiltersViewCell.reuseId,
-//                for: indexPath
-//            ) as? FiltersViewCell else {
-//                return UICollectionViewCell()
-//            }
-//            
-//            cell.openSelectCategory = { [weak self] in
-//                self?.interactor.loadSelectCategory()
-//            }
-//            
-//            cell.openPriceSelector = { [weak self] in
-//                self?.interactor.loadPriceSelector()
-//            }
-//            
-//            return cell
-//        case .products:
-//            guard let cell = collectionView.dequeueReusableCell(
-//                withReuseIdentifier: ProductViewCell.reuseId,
-//                for: indexPath
-//            ) as? ProductViewCell else {
-//                return UICollectionViewCell()
-//            }
-//        
-//            cell.configure(name: "Futuristic Holographic Soccer Cleats", price: "39$")
-//            return cell
-//        }
-//    }
-//}
 
 // MARK: - UITableViewDelegate
 extension SearchViewController: UITableViewDelegate {

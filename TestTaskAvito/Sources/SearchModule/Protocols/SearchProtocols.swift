@@ -11,7 +11,7 @@ protocol SearchBusinessLogic: UICollectionViewDataSource {
     func loadStart()
     func loadSelectCategory()
     func loadPriceSelector()
-    func loadProductCard()
+    func loadProductCard(for index: Int)
     func loadProducts(
         title: String?,
         priceMin: Int?,
@@ -27,7 +27,7 @@ protocol SearchPresentationLogic {
 protocol SearchRouterLogic {
     func routeToSelectCategory()
     func routeToPriceSelector()
-    func routeToProductCard()
+    func routeToProductCard(with model: ProductModel.Element)
 }
 
 protocol ProductsWorker {

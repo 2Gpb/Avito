@@ -33,7 +33,10 @@ extension SearchPresenter: SearchRouterLogic {
         view?.present(bottomSheetVC, animated: true)
     }
     
-    func routeToProductCard() {
-        view?.navigationController?.pushViewController(ProductCardAssembly.build(), animated: true)
+    func routeToProductCard(with model: ProductModel.Element) {
+        view?.navigationController?.pushViewController(
+            ProductCardAssembly.build(with: model),
+            animated: true
+        )
     }
 }

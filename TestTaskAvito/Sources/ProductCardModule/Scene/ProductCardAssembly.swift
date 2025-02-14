@@ -8,9 +8,9 @@
 import UIKit
 
 final class ProductCardAssembly {
-    static func build() -> UIViewController {
+    static func build(with model: ProductModel.Element) -> UIViewController {
         let presenter = ProductCardPresenter()
-        let interactor = ProductCardInteractor(presenter: presenter)
+        let interactor = ProductCardInteractor(presenter: presenter, model: model)
         let view = ProductCardViewController(interactor: interactor)
         
         presenter.view = view
