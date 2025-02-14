@@ -86,9 +86,14 @@ final class ShoppingListViewController: UIViewController {
         setUp()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        interactor.loadStart()
+    }
+    
     // MARK: - Methods
     func displayStart() {
-        
+        collection.reloadData()
     }
     
     // MARK: - SetUp
@@ -131,7 +136,7 @@ final class ShoppingListViewController: UIViewController {
     
     private func setUpCollection() {
         collection.delegate = self
-        collection.dataSource = self
+        collection.dataSource = interactor
         collection.backgroundColor = .clear
         collection.register(ShoppingListCell.self, forCellWithReuseIdentifier: ShoppingListCell.reuseId)
         
@@ -148,6 +153,8 @@ final class ShoppingListViewController: UIViewController {
             titleColor: UIColor(color: .base0),
             backgroundColor: UIColor(color: .base50)
         )
+        
+        clearButton.addTarget(self, action: #selector(clearButtonTapped), for: .touchUpInside)
         
         view.addSubview(clearButton)
         clearButton.pinLeft(to: view, Constant.ClearButton.leftoffset)
@@ -176,6 +183,10 @@ final class ShoppingListViewController: UIViewController {
         )
         
         interactor.shareCart(shareSheet: activityViewController)
+    }
+    
+    @objc private func clearButtonTapped() {
+        interactor.clearCart()
     }
 }
 
@@ -206,38 +217,5 @@ extension ShoppingListViewController: UICollectionViewDelegateFlowLayout {
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
         Constant.CollectionView.edgeInsets
-    }
-}
-
-// MARK: - UICollectionViewDataSource
-extension ShoppingListViewController: UICollectionViewDataSource {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        numberOfItemsInSection section: Int
-    ) -> Int {
-        1
-    }
-    
-    func collectionView(
-        _ collectionView: UICollectionView,
-        cellForItemAt indexPath: IndexPath
-    ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: ShoppingListCell.reuseId,
-            for: indexPath
-        ) as? ShoppingListCell else {
-            return UICollectionViewCell()
-        }
-        
-        cell.configure(with:
-            ShoppingListItemModel(
-                image: UIImage(),
-                name: "Futuristic Holographic Soccer Cleats",
-                price: "39$",
-                count: 1
-            )
-        )
-        
-        return cell
     }
 }

@@ -57,12 +57,15 @@ final class ShoppingListCell: UICollectionViewCell {
     static let reuseId: String = Constant.ReuseId.value
     
     // MARK: - UI Components
-    private let imageView: UIImageView = UIImageView()
+    private let imageView: AsyncImageView = AsyncImageView()
     private let moreButton: UIButton = UIButton(type: .system)
     private var nameLabel: UILabel = UILabel()
     private var priceLabel: UILabel = UILabel()
     private var counterLabel: UILabel = UILabel()
     private var counter: UIView = UIView()
+    
+    var plusTapped: (() -> Void)?
+    var minusTapped: (() -> Void)?
     
     // MARK: - Lifecycle
     override init(frame: CGRect) {
@@ -77,10 +80,14 @@ final class ShoppingListCell: UICollectionViewCell {
     
     // MARK: - Methods
     func configure(with model: ShoppingListItemModel) {
-        imageView.image = model.image
+        imageView.loadImage(path: model.image)
         nameLabel.text = model.name
         priceLabel.text = model.price
         counterLabel.text = "\(model.count)"
+    }
+    
+    func setCount(_ count: Int) {
+        counterLabel.text = "\(count)"
     }
     
     // MARK: - SetUp
@@ -96,6 +103,7 @@ final class ShoppingListCell: UICollectionViewCell {
     
     private func setUpImageView() {
         imageView.backgroundColor = .gray
+        imageView.clipsToBounds = true
         imageView.layer.cornerRadius = Constant.ImageView.cornerRadius
         
         contentView.addSubview(imageView)
@@ -174,17 +182,11 @@ final class ShoppingListCell: UICollectionViewCell {
     
     @objc
     private func minusCount() {
-        if var count = Int(counterLabel.text ?? "") {
-            count -= 1
-            counterLabel.text = "\(max(count, 0))"
-        }
+        minusTapped?()
     }
     
     @objc
     private func plusCount() {
-        if var count = Int(counterLabel.text ?? "") {
-            count += 1
-            counterLabel.text = "\(min(count, 99))"
-        }
+        plusTapped?()
     }
 }

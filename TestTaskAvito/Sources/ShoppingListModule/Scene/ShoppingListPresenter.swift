@@ -8,12 +8,14 @@
 import UIKit
 
 final class ShoppingListPresenter: ShoppingListPresentationLogic {
-    func presentProducts() {
-        <#code#>
-    }
-    
     // MARK: - Variables
     weak var view: ShoppingListViewController?
+    
+    func presentProducts() {
+        DispatchQueue.main.async { [weak self] in
+            self?.view?.displayStart()
+        }
+    }
 }
 
 // MARK: - RouterLogic

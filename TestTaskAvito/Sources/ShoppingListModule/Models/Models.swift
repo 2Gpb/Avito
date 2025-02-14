@@ -8,7 +8,8 @@
 import UIKit
 
 struct ShoppingListItemModel {
-    let image: UIImage
+    let id: Int
+    let image: String
     let name: String
     let price: String
     let count: Int

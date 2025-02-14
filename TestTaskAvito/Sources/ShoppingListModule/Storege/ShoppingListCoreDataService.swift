@@ -29,4 +29,18 @@ final class ShoppingListCoreDataService: CoreDataService, ShoppingListCoreDataSe
             return []
         }
     }
+    
+    func deleteAll() {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
+        do {
+            guard let products = try context.fetch(fetchRequest) as? [Product] else { return }
+            products.forEach({ product in
+                context.delete(product)
+            })
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        appDelegate.saveContext()
+    }
 }

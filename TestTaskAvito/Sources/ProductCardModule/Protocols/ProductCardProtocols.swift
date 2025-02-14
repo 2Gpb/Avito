@@ -28,5 +28,4 @@ protocol ProductCardRouterLogic {
 
 protocol ProductCoreDataServiceLogic: CoreDataService {
     func add(element: ProductModel.Element)
-    func getNumber(of id: Int) -> Int
 }

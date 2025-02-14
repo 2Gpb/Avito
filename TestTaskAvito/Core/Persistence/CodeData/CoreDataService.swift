@@ -56,7 +56,17 @@ class CoreDataService: CoreDataServiceLogic {
         }
     }
     
-    // MARK: - Private methods
+    func getNumber(of id: Int) -> Int {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
+        do {
+            guard let products = try context.fetch(fetchRequest) as? [Product] else { return 0 }
+            return Int(products.first(where: { $0.id == Int16(id) })?.number ?? 0)
+        } catch {
+            print(error.localizedDescription)
+            return 0
+        }
+    }
+    
     func deleteElement(of id: Int) {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
         do {

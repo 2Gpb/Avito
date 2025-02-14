@@ -25,7 +25,7 @@ final class ProductCardPresenter: ProductCardPresentationLogic {
     }
     
     func present(number: Int) {
-        view?.display(number: "\(number)")
+        view?.display(number: number)
     }
 }
 

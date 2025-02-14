@@ -143,11 +143,15 @@ final class ProductCardViewController: UIViewController {
             addButton.isHidden = true
             counter.isHidden = false
             toCartButton.isHidden = false
+        } else {
+            addButton.isHidden = false
+            counter.isHidden = true
+            toCartButton.isHidden = true
         }
     }
     
-    func display(number: String) {
-        counterLabel.text = number
+    func display(number: Int) {
+        counterLabel.text = "\(number)"
     }
     
     // MARK: - SetUp
