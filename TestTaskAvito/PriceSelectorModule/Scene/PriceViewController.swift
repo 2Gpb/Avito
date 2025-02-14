@@ -29,13 +29,13 @@ final class PriceViewController: UIViewController {
         }
         
         enum CloseButton {
-            static let bottomOffset: CGFloat = 17
-            static let leftOffset: CGFloat = 16
-            static let width: CGFloat = 20
-            static let height: CGFloat = 19
+            static let bottomOffset: CGFloat = 4
+            static let leftOffset: CGFloat = 5
+            static let width: CGFloat = 44
+            static let height: CGFloat = 44
             static let image: UIImage? = UIImage(
                 systemName: "xmark",
-                withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)
+                withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold, scale: .default)
             )
         }
         
@@ -161,7 +161,6 @@ final class PriceViewController: UIViewController {
         closeButton.tintColor = UIColor(color: .base0)
         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         
-        
         wrapView.addSubview(closeButton)
         closeButton.pinBottom(to: wrapView, Constant.CloseButton.bottomOffset)
         closeButton.pinLeft(to: wrapView, Constant.CloseButton.leftOffset)
@@ -180,6 +179,8 @@ final class PriceViewController: UIViewController {
             rightView: views.rightView
         )
         
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(fromPriceTapped))
+        fromPriceTextField.addGestureRecognizer(gesture)
         fromPriceTextField.delegate = self
         fromPriceTextField.keyboardType = .numberPad
         fromPriceTextField.text = Constant.TextFields.defaultText
@@ -202,6 +203,8 @@ final class PriceViewController: UIViewController {
             rightView: views.rightView
         )
         
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(toPriceTapped))
+        toPriceTextField.addGestureRecognizer(gesture)
         toPriceTextField.delegate = self
         toPriceTextField.keyboardType = .numberPad
         toPriceTextField.text = Constant.TextFields.defaultText
@@ -275,6 +278,16 @@ final class PriceViewController: UIViewController {
         toClearButton.isHidden = true
         toPriceTextField.text = Constant.TextFields.defaultText
         updateText(textField: toPriceTextField)
+    }
+    
+    @objc
+    private func toPriceTapped() {
+        toPriceTextField.becomeFirstResponder()
+    }
+    
+    @objc
+    private func fromPriceTapped() {
+        fromPriceTextField.becomeFirstResponder()
     }
 }
 

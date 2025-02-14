@@ -15,23 +15,37 @@ final class ProductCardViewController: UIViewController {
         }
         
         enum BackButton {
-            static let image: UIImage? = UIImage(systemName: "chevron.left")
-            static let topOffset: CGFloat = 14
-            static let leftOffset: CGFloat = 16
-            static let width: CGFloat = 24
-            static let height: CGFloat = 24
+            static let topOffset: CGFloat = 4
+            static let leftOffset: CGFloat = 5
+            static let width: CGFloat = 44
+            static let height: CGFloat = 44
+            static let image: UIImage? = UIImage(
+                systemName: "chevron.left",
+                withConfiguration: UIImage.SymbolConfiguration(
+                    pointSize: 18,
+                    weight: .regular,
+                    scale: .default
+                )
+            )
         }
         
         enum ShareButton {
-            static let image: UIImage? = UIImage(systemName: "square.and.arrow.up")
-            static let topOffset: CGFloat = 14
-            static let rightOffset: CGFloat = 16
-            static let width: CGFloat = 21
-            static let height: CGFloat = 26
+            static let topOffset: CGFloat = 4
+            static let rightOffset: CGFloat = 5
+            static let width: CGFloat = 44
+            static let height: CGFloat = 44
+            static let image: UIImage? = UIImage(
+                systemName: "square.and.arrow.up",
+                withConfiguration: UIImage.SymbolConfiguration(
+                    pointSize: 18,
+                    weight: .regular,
+                    scale: .default
+                )
+            )
         }
         
         enum ProductImageView {
-            static let topOffset: CGFloat = 14
+            static let topOffset: CGFloat = 4
             static let heightDivider: CGFloat = 1.5
         }
         
@@ -64,19 +78,19 @@ final class ProductCardViewController: UIViewController {
             static let topOffset: CGFloat = 24
             static let leftOffset: CGFloat = 16
             static let cornerRadius: CGFloat = 16
-            static let verticalInset: CGFloat = 12
-            static let buttonHorizontalOffset: CGFloat = 12
-            static let labelHorizontalOffset: CGFloat = 4
+            static let verticalInset: CGFloat = 2
+            static let buttonHorizontalOffset: CGFloat = 2
+            static let labelHorizontalOffset: CGFloat = 0
             static let labelWidth: CGFloat = 36
-            static let buttonSize: CGFloat = 24
+            static let buttonSize: CGFloat = 44
             static let minusImage: UIImage? = UIImage(
                 systemName: "minus",
-                withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)
+                withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold, scale: .default)
             )
             
             static let plusImage: UIImage? = UIImage(
                 systemName: "plus",
-                withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)
+                withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold, scale: .default)
             )
         }
         
@@ -265,15 +279,14 @@ final class ProductCardViewController: UIViewController {
             alignment: .center
         )
         
-        [counterLabel, plusButton, minusButton].forEach { view in
-            counter.addSubview(view)
-            view.pinVertical(to: counter, Constant.Counter.verticalInset)
-        }
+        [counterLabel, plusButton, minusButton].forEach { view in counter.addSubview(view) }
         
+        minusButton.pinVertical(to: counter, Constant.Counter.verticalInset)
         minusButton.pinLeft(to: counter, Constant.Counter.buttonHorizontalOffset)
         minusButton.setWidth(Constant.Counter.buttonSize)
         minusButton.setHeight(Constant.Counter.buttonSize)
         
+        plusButton.pinVertical(to: counter, Constant.Counter.verticalInset)
         plusButton.pinRight(to: counter, Constant.Counter.buttonHorizontalOffset)
         plusButton.setWidth(Constant.Counter.buttonSize)
         plusButton.setHeight(Constant.Counter.buttonSize)
@@ -282,6 +295,7 @@ final class ProductCardViewController: UIViewController {
         counterLabel.pinRight(to: plusButton.leadingAnchor, Constant.Counter.labelHorizontalOffset)
         counterLabel.setWidth(Constant.Counter.labelWidth)
         counterLabel.pinCenterX(to: counter)
+        counterLabel.pinCenterY(to: counter)
         
         view.addSubview(counter)
         counter.pinTop(to: stackView.bottomAnchor, Constant.Counter.topOffset)

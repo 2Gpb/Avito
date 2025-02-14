@@ -20,7 +20,15 @@ final class ShoppingListViewController: UIViewController {
         }
         
         enum ShareButton {
-            static let image: UIImage? = UIImage(systemName: "square.and.arrow.up")
+            static let image: UIImage? = UIImage(
+                systemName: "square.and.arrow.up",
+                withConfiguration: UIImage.SymbolConfiguration(
+                    pointSize: 18,
+                    weight: .semibold,
+                    scale: .default
+                )
+            )
+            
             static let topOffset: CGFloat = 4
             static let rightOffset: CGFloat = 6
             static let size: CGFloat = 44
