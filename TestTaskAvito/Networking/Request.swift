@@ -28,7 +28,7 @@ struct Request {
         method: Method = .get,
         parameters: [String : String]? = nil,
         body: Data? = nil,
-        timeInterval: TimeInterval = 60
+        timeInterval: TimeInterval = 5
     ) {
         self.endpoint = endpoint
         self.method = method

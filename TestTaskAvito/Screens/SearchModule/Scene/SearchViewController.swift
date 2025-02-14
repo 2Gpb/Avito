@@ -96,6 +96,7 @@ final class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
+        interactor.loadProducts(title: nil, priceMin: nil, priceMax: nil, categoryId: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {

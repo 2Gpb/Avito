@@ -10,6 +10,12 @@ protocol SearchBusinessLogic {
     func loadSelectCategory()
     func loadPriceSelector()
     func loadProductCard()
+    func loadProducts(
+        title: String?,
+        priceMin: Int?,
+        priceMax: Int?,
+        categoryId: Int?
+    )
 }
 
 protocol SearchPresentationLogic {
@@ -20,4 +26,11 @@ protocol SearchRouterLogic {
     func routeToSelectCategory()
     func routeToPriceSelector()
     func routeToProductCard()
+}
+
+protocol ProductsWorker {
+    func fetchProducts(
+        for address: ProductModel.Address,
+        completion: ((Result<ProductsResponse?, Error>) -> Void)?
+    )
 }
