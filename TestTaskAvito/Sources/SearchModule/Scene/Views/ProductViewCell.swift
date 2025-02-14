@@ -37,7 +37,7 @@ final class ProductViewCell: UICollectionViewCell {
     static let reuseId: String = Constant.ReuseIdentifier.value
     
     // MARK: - UI Components
-    private let image: UIImageView = UIImageView()
+    private let image: AsyncImageView = AsyncImageView()
     private var name: UILabel = UILabel()
     private var price: UILabel = UILabel()
     
@@ -52,10 +52,16 @@ final class ProductViewCell: UICollectionViewCell {
         fatalError(Constant.Error.message)
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        image.reuse()
+    }
+    
     // MARK: - Methods
-    func configure(name: String, price: String) {
+    func configure(name: String, price: String, imagePath: String) {
         self.name.text = name
         self.price.text = price
+        self.image.loadImage(path: imagePath)
     }
     
     // MARK: - SetUp

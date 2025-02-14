@@ -5,13 +5,17 @@
 //  Created by Peter on 11.02.2025.
 //
 
+import Foundation
+
 final class SearchPresenter: SearchPresentationLogic {
     // MARK: - Variables
     weak var view: SearchViewController?
     
     // MARK: - Methods
     func presentStart() {
-        view?.displayStart()
+        DispatchQueue.main.async { [weak self] in
+            self?.view?.displayStart()
+        }
     }
 }
 

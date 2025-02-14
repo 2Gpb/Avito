@@ -96,7 +96,6 @@ final class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
-        interactor.loadProducts(title: nil, priceMin: nil, priceMax: nil, categoryId: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -105,7 +104,9 @@ final class SearchViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func displayStart() { }
+    func displayStart() {
+        collection.reloadData()
+    }
     
     // MARK: - SetUp
     private func setUp() {
@@ -188,7 +189,7 @@ final class SearchViewController: UIViewController {
     
     private func setUpProductCollection() {
         collection.delegate = self
-        collection.dataSource = self
+        collection.dataSource = interactor
         collection.backgroundColor = UIColor(color: .base70)
         collection.register(
             ProductViewCell.self,
@@ -388,64 +389,64 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-// MARK: - UICollectionViewDataSource
-extension SearchViewController: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        CollectionSection.allCases.count
-    }
-    
-    func collectionView(
-        _ collectionView: UICollectionView,
-        numberOfItemsInSection section: Int
-    ) -> Int {
-        let section = CollectionSection.allCases[section]
-        
-        switch section {
-        case .filters:
-            return 1
-        case .products:
-            return 8
-        }
-    }
-    
-    func collectionView(
-        _ collectionView: UICollectionView,
-        cellForItemAt indexPath: IndexPath
-    ) -> UICollectionViewCell {
-        
-        let section = CollectionSection.allCases[indexPath.section]
-        
-        switch section {
-        case .filters:
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: FiltersViewCell.reuseId,
-                for: indexPath
-            ) as? FiltersViewCell else {
-                return UICollectionViewCell()
-            }
-            
-            cell.openSelectCategory = { [weak self] in
-                self?.interactor.loadSelectCategory()
-            }
-            
-            cell.openPriceSelector = { [weak self] in
-                self?.interactor.loadPriceSelector()
-            }
-            
-            return cell
-        case .products:
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: ProductViewCell.reuseId,
-                for: indexPath
-            ) as? ProductViewCell else {
-                return UICollectionViewCell()
-            }
-        
-            cell.configure(name: "Futuristic Holographic Soccer Cleats", price: "39$")
-            return cell
-        }
-    }
-}
+//// MARK: - UICollectionViewDataSource
+//extension SearchViewController: UICollectionViewDataSource {
+//    func numberOfSections(in collectionView: UICollectionView) -> Int {
+//        CollectionSection.allCases.count
+//    }
+//    
+//    func collectionView(
+//        _ collectionView: UICollectionView,
+//        numberOfItemsInSection section: Int
+//    ) -> Int {
+//        let section = CollectionSection.allCases[section]
+//        
+//        switch section {
+//        case .filters:
+//            return 1
+//        case .products:
+//            return 8
+//        }
+//    }
+//    
+//    func collectionView(
+//        _ collectionView: UICollectionView,
+//        cellForItemAt indexPath: IndexPath
+//    ) -> UICollectionViewCell {
+//        
+//        let section = CollectionSection.allCases[indexPath.section]
+//        
+//        switch section {
+//        case .filters:
+//            guard let cell = collectionView.dequeueReusableCell(
+//                withReuseIdentifier: FiltersViewCell.reuseId,
+//                for: indexPath
+//            ) as? FiltersViewCell else {
+//                return UICollectionViewCell()
+//            }
+//            
+//            cell.openSelectCategory = { [weak self] in
+//                self?.interactor.loadSelectCategory()
+//            }
+//            
+//            cell.openPriceSelector = { [weak self] in
+//                self?.interactor.loadPriceSelector()
+//            }
+//            
+//            return cell
+//        case .products:
+//            guard let cell = collectionView.dequeueReusableCell(
+//                withReuseIdentifier: ProductViewCell.reuseId,
+//                for: indexPath
+//            ) as? ProductViewCell else {
+//                return UICollectionViewCell()
+//            }
+//        
+//            cell.configure(name: "Futuristic Holographic Soccer Cleats", price: "39$")
+//            return cell
+//        }
+//    }
+//}
 
 // MARK: - UITableViewDelegate
 extension SearchViewController: UITableViewDelegate {

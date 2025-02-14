@@ -5,7 +5,9 @@
 //  Created by Peter on 11.02.2025.
 //
 
-protocol SearchBusinessLogic {
+import UIKit
+
+protocol SearchBusinessLogic: UICollectionViewDataSource {
     func loadStart()
     func loadSelectCategory()
     func loadPriceSelector()
@@ -33,4 +35,8 @@ protocol ProductsWorker {
         for address: ProductModel.Address,
         completion: ((Result<ProductsResponse?, Error>) -> Void)?
     )
+}
+
+protocol ProductStorage {
+    var products: ProductsResponse { get set }
 }
