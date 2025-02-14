@@ -92,6 +92,7 @@ final class FiltersViewCell: UICollectionViewCell {
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(openCategory))
         categoryTextField.addGestureRecognizer(gesture)
+        categoryTextField.delegate = self
         
         contentView.addSubview(categoryTextField)
         categoryTextField.pinTop(to: contentView)
@@ -111,6 +112,7 @@ final class FiltersViewCell: UICollectionViewCell {
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(openPriceRange))
         priceTextField.addGestureRecognizer(gesture)
+        priceTextField.delegate = self
     
         contentView.addSubview(priceTextField)
         priceTextField.pinTop(to: contentView)
@@ -171,5 +173,12 @@ final class FiltersViewCell: UICollectionViewCell {
     private func openPriceRange() {
         priceTextField.resignFirstResponder()
         openPriceSelector?()
+    }
+}
+
+// MARK: - UITextFieldDelegate
+extension FiltersViewCell: UITextFieldDelegate {
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        return false
     }
 }

@@ -45,17 +45,17 @@ final class PriceViewController: UIViewController {
             static let horizontalOffset: CGFloat = 16
             static let toPriceLabel: String = "To"
             static let offset: CGFloat = 40
-            static let rightButtonFrame: CGRect = CGRect(x: 4, y: 3, width: 15, height: 14)
+            static let rightButtonFrame: CGRect = CGRect(x: 8, y: 0, width: 24, height: 24)
             static let defaultText: String = " $"
             static let clearImage: UIImage? = UIImage(
                 systemName: "xmark",
-                withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)
+                withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold, scale: .small)
             )
             
             static let bigLeftViewFrame: CGRect = CGRect(x: 0, y: 0, width: 54, height: 22)
             static let smallLeftViewFrame: CGRect = CGRect(x: 0, y: 0, width: 36, height: 22)
             static let leftViewTitleFrame: CGRect = CGRect(x: 15, y: 0, width: 40, height: 22)
-            static let rightViewFrame: CGRect = CGRect(x: 0, y: 0, width: 38, height: 20)
+            static let rightViewFrame: CGRect = CGRect(x: 0, y: 0, width: 40, height: 24)
             static let maxLength: Int = 10
         }
         

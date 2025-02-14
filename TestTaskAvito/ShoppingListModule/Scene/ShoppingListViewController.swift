@@ -47,6 +47,14 @@ final class ShoppingListViewController: UIViewController {
             static let bottomOffset: CGFloat = 16
             static let emptySpace: CGFloat = 44
         }
+        
+        enum CollectionView {
+            static let topOffset: CGFloat = 14
+            static let cellHeight: CGFloat = 96
+            static let cellOffsets: CGFloat = 32
+            static let lineSpacing: CGFloat = 20
+            static let edgeInsets: UIEdgeInsets = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
+        }
     }
     
     // MARK: - Private fields
@@ -57,7 +65,10 @@ final class ShoppingListViewController: UIViewController {
     private let shareButton: UIButton = UIButton(type: .system)
     private var buyButton: UIButton = UIButton(type: .system)
     private var clearButton: UIButton = UIButton(type: .system)
-    private let collection: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private let collection: UICollectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: UICollectionViewFlowLayout()
+    )
     
     // MARK: - Lifecycle
     init(interactor: ShoppingListBusinessLogic) {
@@ -82,6 +93,7 @@ final class ShoppingListViewController: UIViewController {
         
         setUpTitle()
         setUpShareButton()
+        setUpCollection()
         setUpClearButton()
         setUpBuyButton()
     }
@@ -110,6 +122,18 @@ final class ShoppingListViewController: UIViewController {
         shareButton.pinRight(to: view, Constant.ShareButton.rightOffset)
         shareButton.setWidth(Constant.ShareButton.size)
         shareButton.setHeight(Constant.ShareButton.size)
+    }
+    
+    private func setUpCollection() {
+        collection.delegate = self
+        collection.dataSource = self
+        collection.backgroundColor = .clear
+        collection.register(ShoppingListCell.self, forCellWithReuseIdentifier: ShoppingListCell.reuseId)
+        
+        view.addSubview(collection)
+        collection.pinTop(to: titleLabel.bottomAnchor, Constant.CollectionView.topOffset)
+        collection.pinHorizontal(to: view)
+        collection.pinBottom(to: view.safeAreaLayoutGuide.bottomAnchor)
     }
     
     private func setUpClearButton() {
@@ -147,5 +171,68 @@ final class ShoppingListViewController: UIViewController {
         )
         
         interactor.shareCart(shareSheet: activityViewController)
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+extension ShoppingListViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        CGSize(
+            width: view.frame.width - Constant.CollectionView.cellOffsets,
+            height: Constant.CollectionView.cellHeight
+        )
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        minimumLineSpacingForSectionAt section: Int
+    ) -> CGFloat {
+        Constant.CollectionView.lineSpacing
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        insetForSectionAt section: Int
+    ) -> UIEdgeInsets {
+        Constant.CollectionView.edgeInsets
+    }
+}
+
+// MARK: - UICollectionViewDataSource
+extension ShoppingListViewController: UICollectionViewDataSource {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        numberOfItemsInSection section: Int
+    ) -> Int {
+        1
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: ShoppingListCell.reuseId,
+            for: indexPath
+        ) as? ShoppingListCell else {
+            return UICollectionViewCell()
+        }
+        
+        cell.configure(with:
+            ShoppingListItemModel(
+                image: UIImage(),
+                name: "Futuristic Holographic Soccer Cleats",
+                price: "39$",
+                count: 1
+            )
+        )
+        
+        return cell
     }
 }

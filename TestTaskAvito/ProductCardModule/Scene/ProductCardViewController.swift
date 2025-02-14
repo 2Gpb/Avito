@@ -46,18 +46,18 @@ final class ProductCardViewController: UIViewController {
         
         enum ProductImageView {
             static let topOffset: CGFloat = 4
-            static let heightDivider: CGFloat = 1.5
+            static let heightDivider: CGFloat = 1.55
         }
         
         enum Stack {
-            static let spacing: CGFloat = 13
+            static let spacingCoeff: CGFloat = 0.014
             static let topOffset: CGFloat = 16
             static let horizontalOffset: CGFloat = 16
         }
         
         enum Labels {
             static let pricenumberOfLines: Int = 1
-            static let nameNumberOfLines: Int = 1
+            static let nameNumberOfLines: Int = 2
             static let descriptionNumberOfLines: Int = 3
         }
         
@@ -70,33 +70,21 @@ final class ProductCardViewController: UIViewController {
         
         enum AddButton {
             static let title: String = "Add to shopping list"
-            static let topOffset: CGFloat = 20
+            static let topOffsetCoeff: CGFloat = 0.022
             static let horizontalOffset: CGFloat = 16
         }
          
         enum Counter {
-            static let topOffset: CGFloat = 24
+            static let topOffsetCoeff: CGFloat = 0.022
             static let leftOffset: CGFloat = 16
-            static let cornerRadius: CGFloat = 16
             static let verticalInset: CGFloat = 2
-            static let buttonHorizontalOffset: CGFloat = 2
-            static let labelHorizontalOffset: CGFloat = 0
-            static let labelWidth: CGFloat = 36
+            static let horizontalInset: CGFloat = 2
             static let buttonSize: CGFloat = 44
-            static let minusImage: UIImage? = UIImage(
-                systemName: "minus",
-                withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold, scale: .default)
-            )
-            
-            static let plusImage: UIImage? = UIImage(
-                systemName: "plus",
-                withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold, scale: .default)
-            )
         }
         
         enum ToCartButton {
             static let title: String = "To the shopping list"
-            static let topOffset: CGFloat = 24
+            static let topOffsetCoeff: CGFloat = 0.022
             static let leftOffset: CGFloat = 12
             static let rightOffset: CGFloat = 16
         }
@@ -117,7 +105,7 @@ final class ProductCardViewController: UIViewController {
     private var addButton: UIButton = UIButton(type: .system)
     private var counterLabel: UILabel = UILabel()
     private var toCartButton: UIButton = UIButton(type: .system)
-    private let counter: UIView = UIView()
+    private var counter: UIView = UIView()
     
     // MARK: - Lifecycle
     init(interactor: ProductCardBusinessLogic) {
@@ -185,7 +173,7 @@ final class ProductCardViewController: UIViewController {
     
     private func setUpInfoStack() {
         stackView.axis = .vertical
-        stackView.spacing = Constant.Stack.spacing
+        stackView.spacing = Constant.Stack.spacingCoeff * view.frame.height
         stackView.alignment = .leading
         stackView.distribution = .equalSpacing
         
@@ -252,26 +240,11 @@ final class ProductCardViewController: UIViewController {
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         
         view.addSubview(addButton)
-        addButton.pinTop(to: stackView.bottomAnchor, Constant.AddButton.topOffset)
+        addButton.pinTop(to: stackView.bottomAnchor, Constant.AddButton.topOffsetCoeff * view.frame.height)
         addButton.pinHorizontal(to: view, Constant.AddButton.horizontalOffset)
     }
     
     private func setUpCounter() {
-        let minusButton: UIButton = UIButton()
-        let plusButton: UIButton = UIButton()
-        
-        counter.layer.cornerRadius = Constant.Counter.cornerRadius
-        counter.backgroundColor = UIColor(color: .base50)
-        counter.isHidden = true
-        
-        minusButton.setImage(Constant.Counter.minusImage, for: .normal)
-        minusButton.tintColor = UIColor(color: .base0)
-        minusButton.addTarget(self, action: #selector(minusButtonTapped), for: .touchUpInside)
-        
-        plusButton.setImage(Constant.Counter.plusImage, for: .normal)
-        plusButton.tintColor = UIColor(color: .base0)
-        plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
-        
         counterLabel = ViewFactory.shared.setUpLabel(
             label: counterLabel,
             font: TextStyle.productTitle.font,
@@ -279,26 +252,21 @@ final class ProductCardViewController: UIViewController {
             alignment: .center
         )
         
-        [counterLabel, plusButton, minusButton].forEach { view in counter.addSubview(view) }
-        
-        minusButton.pinVertical(to: counter, Constant.Counter.verticalInset)
-        minusButton.pinLeft(to: counter, Constant.Counter.buttonHorizontalOffset)
-        minusButton.setWidth(Constant.Counter.buttonSize)
-        minusButton.setHeight(Constant.Counter.buttonSize)
-        
-        plusButton.pinVertical(to: counter, Constant.Counter.verticalInset)
-        plusButton.pinRight(to: counter, Constant.Counter.buttonHorizontalOffset)
-        plusButton.setWidth(Constant.Counter.buttonSize)
-        plusButton.setHeight(Constant.Counter.buttonSize)
-        
-        counterLabel.pinLeft(to: minusButton.trailingAnchor, Constant.Counter.labelHorizontalOffset)
-        counterLabel.pinRight(to: plusButton.leadingAnchor, Constant.Counter.labelHorizontalOffset)
-        counterLabel.setWidth(Constant.Counter.labelWidth)
-        counterLabel.pinCenterX(to: counter)
-        counterLabel.pinCenterY(to: counter)
+        counter.isHidden = true
+        counter = ViewFactory.shared.setUpCounter(
+            counter: counter,
+            counterLabel: counterLabel,
+            target: self,
+            minusButtonTapped: #selector(minusCount),
+            plusButtonTapped: #selector(plusCount),
+            verticalInsets: Constant.Counter.verticalInset,
+            horizontalInsets: Constant.Counter.horizontalInset,
+            buttonSize: Constant.Counter.buttonSize,
+            buttonImageScale: .default
+        )
         
         view.addSubview(counter)
-        counter.pinTop(to: stackView.bottomAnchor, Constant.Counter.topOffset)
+        counter.pinTop(to: stackView.bottomAnchor, view.frame.height * Constant.Counter.topOffsetCoeff)
         counter.pinLeft(to: view, Constant.Counter.leftOffset)
     }
     
@@ -308,7 +276,7 @@ final class ProductCardViewController: UIViewController {
         toCartButton.isHidden = true
         
         view.addSubview(toCartButton)
-        toCartButton.pinTop(to: stackView.bottomAnchor, Constant.ToCartButton.topOffset)
+        toCartButton.pinTop(to: stackView.bottomAnchor, view.frame.height * Constant.ToCartButton.topOffsetCoeff)
         toCartButton.pinLeft(to: counter.trailingAnchor, Constant.ToCartButton.leftOffset)
         toCartButton.pinRight(to: view, Constant.ToCartButton.rightOffset)
     }
@@ -338,7 +306,7 @@ final class ProductCardViewController: UIViewController {
     }
     
     @objc
-    private func plusButtonTapped() {
+    private func plusCount() {
         if var number = Int(counterLabel.text ?? "0") {
             number += 1
             counterLabel.text = "\(min(number, 99))"
@@ -346,7 +314,7 @@ final class ProductCardViewController: UIViewController {
     }
     
     @objc
-    private func minusButtonTapped() {
+    private func minusCount() {
         if var number = Int(counterLabel.text ?? "0") {
             number -= 1
             if number == 0 {
@@ -361,6 +329,6 @@ final class ProductCardViewController: UIViewController {
     
     @objc
     private func toCartButtonTapped() {
-        print(1)
+        tabBarController?.selectedIndex = 1
     }
 }

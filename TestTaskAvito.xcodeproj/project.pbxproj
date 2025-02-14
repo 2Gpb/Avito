@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		D073A52F2D5A8B5000AD4367 /* TestTaskAvito.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = TestTaskAvito.app; path = "/Users/peter/Documents/Swift/TestTaskAvito/build/Debug-iphoneos/TestTaskAvito.app"; sourceTree = "<absolute>"; };
+		D030E09E2D5F315200060D00 /* TestTaskAvito.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = TestTaskAvito.app; path = "/Users/peter/Documents/Swift/TestTaskAvito/build/Debug-iphoneos/TestTaskAvito.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -71,7 +71,7 @@
 			packageProductDependencies = (
 			);
 			productName = TestTaskAvito;
-			productReference = D073A52F2D5A8B5000AD4367 /* TestTaskAvito.app */;
+			productReference = D030E09E2D5F315200060D00 /* TestTaskAvito.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
