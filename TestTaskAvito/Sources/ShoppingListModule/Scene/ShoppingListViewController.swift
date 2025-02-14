@@ -86,6 +86,11 @@ final class ShoppingListViewController: UIViewController {
         setUp()
     }
     
+    // MARK: - Methods
+    func displayStart() {
+        
+    }
+    
     // MARK: - SetUp
     private func setUp() {
         view.backgroundColor = UIColor(color: .base70)

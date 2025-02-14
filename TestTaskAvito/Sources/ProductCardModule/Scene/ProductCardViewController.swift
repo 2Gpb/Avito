@@ -130,13 +130,24 @@ final class ProductCardViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func displayStart(model: ProductCardModel) {
+    func displayStart(model: ProductCardModel, number: Int) {
         priceLabel.text = model.price
         nameLabel.text = model.title
         descriptionLabel.text = model.description
         categoryLabel.text = model.category
         productImageView.loadImage(path: model.imageAddress)
         categoryWrap.isHidden = false
+        
+        counterLabel.text = "\(number)"
+        if number > 0 {
+            addButton.isHidden = true
+            counter.isHidden = false
+            toCartButton.isHidden = false
+        }
+    }
+    
+    func display(number: String) {
+        counterLabel.text = number
     }
     
     // MARK: - SetUp
@@ -313,7 +324,7 @@ final class ProductCardViewController: UIViewController {
     
     @objc
     private func addButtonTapped() {
-        counterLabel.text = "1"
+        interactor.addFirstNumber()
         addButton.isHidden = true
         counter.isHidden = false
         toCartButton.isHidden = false
@@ -321,23 +332,16 @@ final class ProductCardViewController: UIViewController {
     
     @objc
     private func plusCount() {
-        if var number = Int(counterLabel.text ?? "0") {
-            number += 1
-            counterLabel.text = "\(min(number, 99))"
-        }
+        interactor.increaseNumber()
     }
     
     @objc
     private func minusCount() {
-        if var number = Int(counterLabel.text ?? "0") {
-            number -= 1
-            if number == 0 {
-                addButton.isHidden = false
-                counter.isHidden = true
-                toCartButton.isHidden = true
-            }
-            
-            counterLabel.text = "\(max(number, 0))"
+        interactor.decreaseNumber()
+        if let number = Int(counterLabel.text ?? "0"), number == 0 {
+            addButton.isHidden = false
+            counter.isHidden = true
+            toCartButton.isHidden = true
         }
     }
     

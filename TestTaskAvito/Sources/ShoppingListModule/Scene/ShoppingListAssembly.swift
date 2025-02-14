@@ -9,8 +9,9 @@ import UIKit
 
 final class ShoppingListAssembly {
     static func build() -> UIViewController {
+        let service = ShoppingListCoreDataService()
         let presenter = ShoppingListPresenter()
-        let interactor = ShoppingListInteractor(presenter: presenter)
+        let interactor = ShoppingListInteractor(presenter: presenter, service: service)
         let view = ShoppingListViewController(interactor: interactor)
         
         presenter.view = view

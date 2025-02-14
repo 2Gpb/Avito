@@ -12,7 +12,7 @@ final class ProductCardPresenter: ProductCardPresentationLogic {
     weak var view: ProductCardViewController?
     
     // MARK: - Methods
-    func presentStart(model: ProductModel.Element) {
+    func presentStart(with model: ProductModel.Element, number: Int) {
         let newModel = ProductCardModel(
             imageAddress: model.images[0],
             price: "\(model.price)$",
@@ -21,7 +21,11 @@ final class ProductCardPresenter: ProductCardPresentationLogic {
             category: model.category.name
         )
         
-        view?.displayStart(model: newModel)
+        view?.displayStart(model: newModel, number: number)
+    }
+    
+    func present(number: Int) {
+        view?.display(number: "\(number)")
     }
 }
 

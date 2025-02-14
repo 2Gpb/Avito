@@ -8,6 +8,10 @@
 import UIKit
 
 final class ShoppingListPresenter: ShoppingListPresentationLogic {
+    func presentProducts() {
+        <#code#>
+    }
+    
     // MARK: - Variables
     weak var view: ShoppingListViewController?
 }

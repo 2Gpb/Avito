@@ -11,16 +11,40 @@ final class ProductCardInteractor: ProductCardBusinessLogic {
     // MARK: - Private fields
     private let presenter: ProductCardPresentationLogic & ProductCardRouterLogic
     private let productModel: ProductModel.Element
+    private let service: ProductCoreDataServiceLogic
     
     // MARK: - Lifecycle
-    init(presenter: ProductCardPresentationLogic & ProductCardRouterLogic, model: ProductModel.Element) {
+    init(
+        presenter: ProductCardPresentationLogic & ProductCardRouterLogic,
+        model: ProductModel.Element,
+        service: ProductCoreDataServiceLogic
+    ) {
         self.presenter = presenter
         self.productModel = model
+        self.service = service
     }
     
     // MARK: - Methods
     func loadStart() {
-        presenter.presentStart(model: productModel)
+        presenter.presentStart(
+            with: productModel,
+            number: service.getNumber(of: productModel.id)
+        )
+    }
+    
+    func addFirstNumber() {
+        service.add(element: productModel)
+        presenter.present(number: service.getNumber(of: productModel.id))
+    }
+    
+    func increaseNumber() {
+        service.increaseNumber(of: productModel.id)
+        presenter.present(number: service.getNumber(of: productModel.id))
+    }
+    
+    func decreaseNumber() {
+        service.decreaseNumber(of: productModel.id)
+        presenter.present(number: service.getNumber(of: productModel.id))
     }
     
     func goBack() {

@@ -11,14 +11,22 @@ protocol ProductCardBusinessLogic {
     func goBack()
     func shareProduct(shareSheet: UIActivityViewController)
     func loadStart()
+    func addFirstNumber()
+    func increaseNumber()
+    func decreaseNumber()
 }
 
 protocol ProductCardPresentationLogic {
-    
+    func present(shareSheet: UIActivityViewController)
+    func presentStart(with model: ProductModel.Element, number: Int)
+    func present(number: Int)
 }
 
 protocol ProductCardRouterLogic {
     func popViewController()
-    func present(shareSheet: UIActivityViewController)
-    func presentStart(model: ProductModel.Element)
+}
+
+protocol ProductCoreDataServiceLogic: CoreDataService {
+    func add(element: ProductModel.Element)
+    func getNumber(of id: Int) -> Int
 }

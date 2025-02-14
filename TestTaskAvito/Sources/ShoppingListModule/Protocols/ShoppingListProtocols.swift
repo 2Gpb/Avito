@@ -8,13 +8,18 @@
 import UIKit
 
 protocol ShoppingListBusinessLogic {
+    func loadStart()
     func shareCart(shareSheet: UIActivityViewController)
 }
 
 protocol ShoppingListPresentationLogic {
-    
+    func presentProducts()
 }
 
 protocol ShoppingListRouterLogic {
     func presentShareSheet(shareSheet: UIActivityViewController)
+}
+
+protocol ShoppingListCoreDataServiceLogic: CoreDataService {
+    func getAllProducts() -> [Product]
 }
