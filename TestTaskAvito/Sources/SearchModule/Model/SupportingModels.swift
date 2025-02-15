@@ -6,6 +6,7 @@
 //
 
 struct FiltersModel {
+    var title: String?
     var categoryId: Int?
     var categoryName: String?
     var priceFrom: Int?
@@ -15,4 +16,8 @@ struct FiltersModel {
 enum CollectionSection: Int, CaseIterable {
     case filters
     case products
+}
+
+enum UserDefaultsKeys: String {
+    case history
 }

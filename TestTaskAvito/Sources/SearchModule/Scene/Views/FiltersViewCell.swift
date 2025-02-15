@@ -79,10 +79,6 @@ final class FiltersViewCell: UICollectionViewCell {
         self.categoryTextField.text = name
         if let min = min, let max = max {
             self.priceTextField.text = "$\(min) - $\(max)"
-        } else if let min = min {
-            self.priceTextField.text = "from $\(min)"
-        } else if let max = max {
-            self.priceTextField.text = "up to $\(max)"
         } else {
             self.priceTextField.text = nil
         }

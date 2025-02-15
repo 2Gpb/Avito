@@ -7,10 +7,11 @@
 
 import UIKit
 
-final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
+final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {    
     // MARK: - Private fields
     private let presenter: SearchPresentationLogic & SearchRouterLogic
     private let productsService: ProductsWorker
+    private let storageService: UserDefaultsLogic
     
     // MARK: - Variables
     var filters: FiltersModel
@@ -20,20 +21,18 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
     init(
         presenter: SearchPresentationLogic & SearchRouterLogic,
         service: ProductsWorker,
+        storage: UserDefaultsLogic = UserDefaultsService(),
         filters: FiltersModel = FiltersModel()
     ) {
         self.presenter = presenter
         self.productsService = service
         self.filters = filters
+        self.storageService = storage
     }
     
     // MARK: - Methods
     func loadStart() {
-        loadProducts(
-            priceMin: filters.priceFrom,
-            priceMax: filters.priceTo,
-            categoryId: filters.categoryId
-        )
+        refresh()
     }
     
     func loadSelectCategory() {
@@ -56,10 +55,51 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
         presenter.routeToProductCard(with: products[index])
     }
     
+    func loadSearch(with title: String?) {
+        if let title = title, !title.isEmpty {
+            var history: [String] = storageService.get(
+                forKey: UserDefaultsKeys.history.rawValue,
+                defaultValue: []
+            )
+            
+            history.removeAll { $0 == title }
+            history.insert(title, at: 0)
+            if history.count > 7 {
+                history.removeLast()
+            }
+
+            storageService.set(
+                value: history,
+                forKey: UserDefaultsKeys.history.rawValue
+            )
+        }
+        
+        filters.title = title
+        refresh()
+    }
+    
+    func resetSearch() {
+        filters.title = nil
+        refresh()
+    }
+    
     // MARK: - Private fields
+    private func refresh() {
+        loadProducts(
+            title: filters.title,
+            priceMin: filters.priceFrom,
+            priceMax: filters.priceTo,
+            categoryId: filters.categoryId
+        )
+    }
+    
     private func updateProducts(_ products: ProductsResponse) {
         self.products = products
-        presenter.presentStart()
+        if self.products.isEmpty {
+            presenter.presentStart(isHidden: false)
+        } else {
+            presenter.presentStart(isHidden: true)
+        }
     }
     
     private func loadProducts(
@@ -134,7 +174,7 @@ extension SearchInteractor: UICollectionViewDataSource {
             }
             
             cell.showProducts = { [weak self] in
-                self?.loadStart()
+                self?.refresh()
             }
             
             cell.resetFilters = { [weak self] in
@@ -142,7 +182,7 @@ extension SearchInteractor: UICollectionViewDataSource {
                 self?.filters.categoryName = nil
                 self?.filters.priceFrom = nil
                 self?.filters.priceTo = nil
-                self?.loadProducts()
+                self?.refresh()
             }
             
             return cell
@@ -162,5 +202,29 @@ extension SearchInteractor: UICollectionViewDataSource {
             
             return cell
         }
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension SearchInteractor: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let history = storageService.get(forKey: UserDefaultsKeys.history.rawValue, defaultValue: [])
+        return history.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: SearchQueryCell.reuseId
+        ) as? SearchQueryCell else {
+            return UITableViewCell()
+        }
+        
+        let history: [String] = storageService.get(
+            forKey: UserDefaultsKeys.history.rawValue,
+            defaultValue: []
+        )
+        
+        cell.configure(query: history[indexPath.row])
+        return cell
     }
 }

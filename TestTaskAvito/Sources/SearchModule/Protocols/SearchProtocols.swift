@@ -7,15 +7,17 @@
 
 import UIKit
 
-protocol SearchBusinessLogic: UICollectionViewDataSource {
+protocol SearchBusinessLogic: UICollectionViewDataSource, UITableViewDataSource {
     func loadStart()
     func loadSelectCategory()
     func loadPriceSelector()
     func loadProductCard(for index: Int)
+    func loadSearch(with title: String?)
+    func resetSearch()
 }
 
 protocol SearchPresentationLogic {
-    func presentStart()
+    func presentStart(isHidden: Bool)
     func presentFilters()
 }
 
