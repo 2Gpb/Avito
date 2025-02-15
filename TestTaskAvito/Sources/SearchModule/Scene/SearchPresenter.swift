@@ -17,12 +17,19 @@ final class SearchPresenter: SearchPresentationLogic {
             self?.view?.displayStart()
         }
     }
+    
+    func presentFilters() {
+        DispatchQueue.main.async { [weak self] in
+            self?.view?.displayFilters()
+        }
+    }
 }
 
 // MARK: - SearchRouterLogic
 extension SearchPresenter: SearchRouterLogic {
-    func routeToSelectCategory() {
-        let bottomSheetVC = CategoryAssembly.build()
+    func routeToSelectCategory(completion: @escaping (Int, String) -> Void, currentCategoryId: Int?) {
+        let bottomSheetVC = CategoryAssembly.build(completion: completion, categoryId: currentCategoryId)
+        
         bottomSheetVC.modalPresentationStyle = .pageSheet
         view?.present(bottomSheetVC, animated: true)
     }

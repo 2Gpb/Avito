@@ -1,14 +1,14 @@
 //
-//  SearchService.swift
+//  CategoriesService.swift
 //  TestTaskAvito
 //
-//  Created by Peter on 14.02.2025.
+//  Created by Peter on 15.02.2025.
 //
 
 import Foundation
 
-final class SearchService: ProductsWorker {
-    // MARK: - Private fiels
+final class CategoryService: CategoryWorker {
+    // MARK: - Private fields
     private let networking: NetworkingLogic
     private let decoder: JSONDecoder = JSONDecoder()
     
@@ -18,21 +18,15 @@ final class SearchService: ProductsWorker {
     }
     
     // MARK: - Methods
-    func fetchProducts(
-        for address: ProductModel.Address,
-        completion: ((Result<ProductsResponse?, Error>) -> Void)?
+    func fetchCategory(
+        completion: ((Result<CategoriesResponse?, any Error>) -> Void)?
     ) {
-        let endpoint =  SearchEndpoint.products(
-            title: address.title,
-            priceMin: address.priceMin,
-            priceMax: address.priceMax,
-            categoryId: address.categoryId
-        )
+        let endpoint = CategoryEndpoint.Categories
         
         fetch(request: Request(endpoint: endpoint), completion: completion)
     }
     
-    // MARK: - Private methods
+    // MARK: - Private fields
     private func fetch<T: Decodable>(
         request: Request,
         completion: ((Result<T?, Error>) -> Void)?

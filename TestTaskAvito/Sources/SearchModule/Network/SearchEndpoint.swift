@@ -39,7 +39,7 @@ enum SearchEndpoint: Endpoint {
             }
             
             if let categoryId = categoryId {
-                result["category_id"] = "\(categoryId)"
+                result["categoryId"] = "\(categoryId)"
             }
             
             return result

@@ -16,6 +16,7 @@ final class CategoryViewController: UIViewController {
         
         enum Sheet {
             static let cornerRadius: CGFloat = 16
+            static let height: CGFloat = 600
         }
         
         enum WrapView {
@@ -44,6 +45,7 @@ final class CategoryViewController: UIViewController {
         
         enum TableView {
             static let heightForRow: CGFloat = 48
+            static let section: Int = 0
         }
     }
     
@@ -72,6 +74,16 @@ final class CategoryViewController: UIViewController {
         setUp()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        interactor.loadStart()
+    }
+    
+    // MARK: - Methods
+    func displayStart() {
+        categoriesTableView.reloadData()
+    }
+    
     // MARK: - SetUp
     private func setUp() {
         view.backgroundColor = UIColor(color: .base70)
@@ -84,7 +96,7 @@ final class CategoryViewController: UIViewController {
     
     private func setupSheetStyle() {
         if let sheet = sheetPresentationController {
-            sheet.detents = [.custom(resolver: { context in return 260 })]
+            sheet.detents = [.custom(resolver: { context in return Constant.Sheet.height })]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = Constant.Sheet.cornerRadius
         }
@@ -131,10 +143,10 @@ final class CategoryViewController: UIViewController {
     
     private func setUpCategoriesTableView() {
         categoriesTableView.delegate = self
-        categoriesTableView.dataSource = self
+        categoriesTableView.dataSource = interactor
         categoriesTableView.backgroundColor = UIColor(color: .base80)
         categoriesTableView.separatorStyle = .none
-        categoriesTableView.isScrollEnabled = false
+        categoriesTableView.isScrollEnabled = true
         categoriesTableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.reuseId)
         
         view.addSubview(categoriesTableView)
@@ -157,30 +169,22 @@ extension CategoryViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else {
             return
         }
         
         cell.showCheckImage()
-        interactor.closeScreen()
-    }
-}
-
-// MARK: - UITableViewDataSource
-extension CategoryViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        4
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {        
-        guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: CategoryCell.reuseId
-        ) as? CategoryCell else {
-            return UITableViewCell()
-        }
         
-        cell.configure(text: "Electronics")
-        return cell
+        interactor.selectedCategory(index: indexPath.row) { index in
+            guard let index = index, let deselectedCell = tableView.cellForRow(
+                at: IndexPath(
+                row: index,
+                section: CollectionSection.filters.rawValue
+                )
+            ) as? CategoryCell
+            else { return }
+            
+            deselectedCell.hideCheckImage()
+        }
     }
 }

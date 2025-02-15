@@ -12,26 +12,32 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
     private let presenter: SearchPresentationLogic & SearchRouterLogic
     private let productsService: ProductsWorker
     
+    // MARK: - Variables
+    var filters: FiltersModel
     var products: ProductsResponse = []
     
-    private enum CollectionSection: Int, CaseIterable {
-        case filters
-        case products
-    }
-    
     // MARK: - Lifecycle
-    init(presenter: SearchPresentationLogic & SearchRouterLogic, service: ProductsWorker) {
+    init(
+        presenter: SearchPresentationLogic & SearchRouterLogic,
+        service: ProductsWorker,
+        filters: FiltersModel = FiltersModel(categoryId: nil, categoryName: nil)
+    ) {
         self.presenter = presenter
         self.productsService = service
+        self.filters = filters
     }
     
     // MARK: - Methods
     func loadStart() {
-        loadProducts(title: nil, priceMin: nil, priceMax: nil, categoryId: nil)
+        loadProducts(categoryId: filters.categoryId)
     }
     
     func loadSelectCategory() {
-        presenter.routeToSelectCategory()
+        presenter.routeToSelectCategory(completion: { [weak self] id, categoryName in
+            self?.filters.categoryId = id
+            self?.filters.categoryName = categoryName
+            self?.presenter.presentFilters()
+        }, currentCategoryId: filters.categoryId)
     }
     
     func loadPriceSelector() {
@@ -42,11 +48,17 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
         presenter.routeToProductCard(with: products[index])
     }
     
-    func loadProducts(
-        title: String?,
-        priceMin: Int?,
-        priceMax: Int?,
-        categoryId: Int?
+    // MARK: - Private fields
+    private func updateProducts(_ products: ProductsResponse) {
+        self.products = products
+        presenter.presentStart()
+    }
+    
+    private func loadProducts(
+        title: String? = nil,
+        priceMin: Int? = nil,
+        priceMax: Int? = nil,
+        categoryId: Int? = nil
     ) {
         productsService.fetchProducts(
             for: ProductModel.Address(
@@ -63,11 +75,6 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
                 print(error)
             }
         }
-    }
-    
-    private func updateProducts(_ products: ProductsResponse) {
-        self.products = products
-        presenter.presentStart()
     }
 }
 
@@ -108,12 +115,24 @@ extension SearchInteractor: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             
+            cell.configure(category: filters.categoryName)
+            
             cell.openSelectCategory = { [weak self] in
                 self?.loadSelectCategory()
             }
             
             cell.openPriceSelector = { [weak self] in
                 self?.loadPriceSelector()
+            }
+            
+            cell.showProducts = { [weak self] in
+                self?.loadStart()
+            }
+            
+            cell.resetFilters = { [weak self] in
+                self?.filters.categoryId = nil
+                self?.filters.categoryName = nil
+                self?.loadProducts()
             }
             
             return cell

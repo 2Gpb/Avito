@@ -59,16 +59,12 @@ final class SearchViewController: UIViewController {
             static let heightCell: CGFloat = 55
         }
     }
-    
-    private enum CollectionSection: Int, CaseIterable {
-        case filters
-        case products
-    }
-    
     // MARK: - Private fields
     private var interactor: SearchBusinessLogic
     
     // MARK: - UI Components
+    private var cancelButton: UIButton = UIButton(type: .system)
+    private let searchHistoryTable: UITableView = UITableView()
     private var searchTextField: UITextField = UITextField()
     private var searchTextFieldRightConstarint: NSLayoutConstraint?
     private let clearSearchTextFieldButton: UIButton = UIButton(type: .system)
@@ -78,9 +74,6 @@ final class SearchViewController: UIViewController {
         frame: .zero,
         collectionViewLayout: UICollectionViewFlowLayout()
     )
-    
-    private var cancelButton: UIButton = UIButton(type: .system)
-    private let searchHistoryTable: UITableView = UITableView()
     
     // MARK: - Lifecycle
     init(interactor: SearchBusinessLogic) {
@@ -98,14 +91,22 @@ final class SearchViewController: UIViewController {
         setUp()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         interactor.loadStart()
     }
     
     // MARK: - Methods
     func displayStart() {
         collection.reloadData()
+    }
+    
+    func displayFilters() {
+        collection.reloadSections(IndexSet(integer: 0))
+    }
+    
+    func displayCategoryName(_ name: String) {
+        title = name
     }
     
     // MARK: - SetUp

@@ -30,11 +30,14 @@ final class CategoryCell: UITableViewCell {
         }
     }
     
+    // MARK: - ReuseId
     static let reuseId: String = Constant.ReuseId.value
     
+    // MARK: - UI Components
     private var titleLabel: UILabel = UILabel()
     private let checkView: UIImageView = UIImageView()
     
+    // MARK: - Lifecycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUp()
@@ -45,12 +48,17 @@ final class CategoryCell: UITableViewCell {
         fatalError(Constant.Error.message)
     }
     
+    // MARK: - Methods
     func configure(text: String) {
         titleLabel.text = text
     }
     
     func showCheckImage() {
         checkView.isHidden = false
+    }
+    
+    func hideCheckImage() {
+        checkView.isHidden = true
     }
     
     private func setUp() {
@@ -60,6 +68,7 @@ final class CategoryCell: UITableViewCell {
         setUpCheckView()
     }
     
+    // MARK: - SetUp
     private func setUpTitleLabel() {
         titleLabel = ViewFactory.shared.setUpLabel(
             label: titleLabel,
