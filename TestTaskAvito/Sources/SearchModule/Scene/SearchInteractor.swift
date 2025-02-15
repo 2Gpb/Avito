@@ -20,7 +20,7 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
     init(
         presenter: SearchPresentationLogic & SearchRouterLogic,
         service: ProductsWorker,
-        filters: FiltersModel = FiltersModel(categoryId: nil, categoryName: nil)
+        filters: FiltersModel = FiltersModel()
     ) {
         self.presenter = presenter
         self.productsService = service
@@ -29,7 +29,11 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
     
     // MARK: - Methods
     func loadStart() {
-        loadProducts(categoryId: filters.categoryId)
+        loadProducts(
+            priceMin: filters.priceFrom,
+            priceMax: filters.priceTo,
+            categoryId: filters.categoryId
+        )
     }
     
     func loadSelectCategory() {
@@ -41,7 +45,11 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
     }
     
     func loadPriceSelector() {
-        presenter.routeToPriceSelector()
+        presenter.routeToPriceSelector(completion: { [weak self] min, max in
+            self?.filters.priceFrom = min
+            self?.filters.priceTo = max
+            self?.presenter.presentFilters()
+        }, currentMin: filters.priceFrom, currentMax: filters.priceTo)
     }
     
     func loadProductCard(for index: Int) {
@@ -115,7 +123,7 @@ extension SearchInteractor: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             
-            cell.configure(category: filters.categoryName)
+            cell.configure(category: filters.categoryName, min: filters.priceFrom, max: filters.priceTo)
             
             cell.openSelectCategory = { [weak self] in
                 self?.loadSelectCategory()
@@ -132,6 +140,8 @@ extension SearchInteractor: UICollectionViewDataSource {
             cell.resetFilters = { [weak self] in
                 self?.filters.categoryId = nil
                 self?.filters.categoryName = nil
+                self?.filters.priceFrom = nil
+                self?.filters.priceTo = nil
                 self?.loadProducts()
             }
             
@@ -146,7 +156,7 @@ extension SearchInteractor: UICollectionViewDataSource {
 
             cell.configure(
                 name: products[indexPath.row].title,
-                price: "\(products[indexPath.row].price)$",
+                price: "$\(products[indexPath.row].price)",
                 imagePath: products[indexPath.row].images[0]
             )
             

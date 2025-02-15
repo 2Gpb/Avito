@@ -20,9 +20,17 @@ protocol SearchPresentationLogic {
 }
 
 protocol SearchRouterLogic {
-    func routeToSelectCategory(completion: @escaping (Int, String) -> Void, currentCategoryId: Int?)
-    func routeToPriceSelector()
     func routeToProductCard(with model: ProductModel.Element)
+    func routeToSelectCategory(
+        completion: @escaping (Int, String) -> Void,
+        currentCategoryId: Int?
+    )
+    
+    func routeToPriceSelector(
+        completion: @escaping (Int?, Int?) -> Void,
+        currentMin: Int?,
+        currentMax: Int?
+    )
 }
 
 protocol ProductsWorker {

@@ -33,13 +33,3 @@ enum ProductModel {
         let categoryId: Int?
     }
 }
-
-struct FiltersModel {
-    var categoryId: Int?
-    var categoryName: String?
-}
-
-enum CollectionSection: Int, CaseIterable {
-    case filters
-    case products
-}

@@ -6,6 +6,7 @@
 //
 
 protocol PriceBusinessLogic {
+    func applyFilter(minPrice: Int?, maxPrice: Int?)
     func closeScreen()
 }
 

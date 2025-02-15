@@ -27,15 +27,30 @@ final class SearchPresenter: SearchPresentationLogic {
 
 // MARK: - SearchRouterLogic
 extension SearchPresenter: SearchRouterLogic {
-    func routeToSelectCategory(completion: @escaping (Int, String) -> Void, currentCategoryId: Int?) {
-        let bottomSheetVC = CategoryAssembly.build(completion: completion, categoryId: currentCategoryId)
+    func routeToSelectCategory(
+        completion: @escaping (Int,String) -> Void,
+        currentCategoryId: Int?
+    ) {
+        let bottomSheetVC = CategoryAssembly.build(
+            completion: completion,
+            categoryId: currentCategoryId
+        )
         
         bottomSheetVC.modalPresentationStyle = .pageSheet
         view?.present(bottomSheetVC, animated: true)
     }
     
-    func routeToPriceSelector() {
-        let bottomSheetVC = PriceAssembly.build()
+    func routeToPriceSelector(
+        completion: @escaping (Int?,Int?) -> Void,
+        currentMin: Int?,
+        currentMax: Int?
+    ) {
+        let bottomSheetVC = PriceAssembly.build(
+            completion: completion,
+            currentMin: currentMin,
+            currentMax: currentMax
+        )
+        
         bottomSheetVC.modalPresentationStyle = .pageSheet
         view?.present(bottomSheetVC, animated: true)
     }
@@ -46,13 +61,12 @@ extension SearchPresenter: SearchRouterLogic {
                 with: ProductCardModel(
                     id: model.id,
                     imageAddress: model.images[0],
-                    price: "\(model.price)$",
+                    price: "$\(model.price)",
                     title: model.title,
                     description: model.description,
                     category: model.category.name
                 )
-            ),
-            animated: true
+            ), animated: true
         )
     }
 }
