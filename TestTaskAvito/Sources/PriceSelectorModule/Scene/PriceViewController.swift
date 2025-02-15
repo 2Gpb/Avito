@@ -82,8 +82,13 @@ final class PriceViewController: UIViewController {
     // MARK: - Lifecycle
     init(interactor: PriceBusinessLogic, priceMin: Int?, priceMax: Int?) {
         self.interactor = interactor
-        self.fromPriceTextField.text = priceMin.map { "\($0)" } ?? " $"
-        self.toPriceTextField.text = priceMax.map { "\($0)" } ?? " $"
+        if let min = priceMin, let max = priceMax {
+            self.fromPriceTextField.text = "\(min)"
+            self.toPriceTextField.text = "\(max)"
+        } else {
+            self.fromPriceTextField.text = " $"
+            self.toPriceTextField.text = " $"
+        }
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -278,10 +283,12 @@ final class PriceViewController: UIViewController {
     
     @objc
     private func applyButtonTapped() {
-        interactor.applyFilter(
-            minPrice: Int(formatString(fromPriceTextField.text ?? "")),
-            maxPrice: Int(formatString(toPriceTextField.text ?? ""))
-        )
+        if let min = Int(formatString(fromPriceTextField.text ?? "")),
+           let max = Int(formatString(toPriceTextField.text ?? "")) {
+            interactor.applyFilter(minPrice: min, maxPrice: max)
+        }
+        
+        interactor.applyFilter(minPrice: nil, maxPrice: nil)
     }
     
     @objc

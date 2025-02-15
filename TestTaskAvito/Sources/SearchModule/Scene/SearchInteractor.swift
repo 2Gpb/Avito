@@ -29,11 +29,7 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
     
     // MARK: - Methods
     func loadStart() {
-        loadProducts(
-            priceMin: filters.priceFrom,
-            priceMax: filters.priceTo,
-            categoryId: filters.categoryId
-        )
+        refresh()
     }
     
     func loadSelectCategory() {
@@ -56,7 +52,26 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
         presenter.routeToProductCard(with: products[index])
     }
     
+    func loadSearch(with title: String?) {
+        filters.title = title
+        refresh()
+    }
+    
+    func resetSearch() {
+        filters.title = nil
+        refresh()
+    }
+    
     // MARK: - Private fields
+    private func refresh() {
+        loadProducts(
+            title: filters.title,
+            priceMin: filters.priceFrom,
+            priceMax: filters.priceTo,
+            categoryId: filters.categoryId
+        )
+    }
+    
     private func updateProducts(_ products: ProductsResponse) {
         self.products = products
         if self.products.isEmpty {
@@ -138,11 +153,7 @@ extension SearchInteractor: UICollectionViewDataSource {
             }
             
             cell.showProducts = { [weak self] in
-                self?.loadProducts(
-                    priceMin: self?.filters.priceFrom,
-                    priceMax: self?.filters.priceTo,
-                    categoryId: self?.filters.categoryId
-                )
+                self?.refresh()
             }
             
             cell.resetFilters = { [weak self] in
@@ -150,11 +161,7 @@ extension SearchInteractor: UICollectionViewDataSource {
                 self?.filters.categoryName = nil
                 self?.filters.priceFrom = nil
                 self?.filters.priceTo = nil
-                self?.loadProducts(
-                    priceMin: self?.filters.priceFrom,
-                    priceMax: self?.filters.priceTo,
-                    categoryId: self?.filters.categoryId
-                )
+                self?.refresh()
             }
             
             return cell

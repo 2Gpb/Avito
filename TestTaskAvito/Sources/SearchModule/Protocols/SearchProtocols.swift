@@ -12,6 +12,8 @@ protocol SearchBusinessLogic: UICollectionViewDataSource {
     func loadSelectCategory()
     func loadPriceSelector()
     func loadProductCard(for index: Int)
+    func loadSearch(with title: String?)
+    func resetSearch()
 }
 
 protocol SearchPresentationLogic {

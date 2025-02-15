@@ -6,6 +6,7 @@
 //
 
 struct FiltersModel {
+    var title: String?
     var categoryId: Int?
     var categoryName: String?
     var priceFrom: Int?

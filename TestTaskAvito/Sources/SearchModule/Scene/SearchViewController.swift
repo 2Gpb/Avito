@@ -146,6 +146,7 @@ final class SearchViewController: UIViewController {
         clearSearchTextFieldButton.isHidden = true
         searchTextField.delegate = self
         searchTextField.keyboardType = .default
+        searchTextField.returnKeyType = .go
         let gesture = UITapGestureRecognizer(target: self, action: #selector(openSearch))
         searchTextField.addGestureRecognizer(gesture)
         
@@ -256,6 +257,21 @@ final class SearchViewController: UIViewController {
         searchHistoryTable.pinBottom(to: view)
     }
     
+    private func cancelAnimation() {
+        searchTextFieldRightConstarint?.isActive = false
+        searchTextFieldRightConstarint = searchTextField.trailingAnchor
+            .constraint(
+                equalTo: view.trailingAnchor,
+                constant: -Constant.SearchTextField.horizontalOffset
+            )
+        
+        searchTextFieldRightConstarint?.isActive = true
+
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+    }
+    
     // MARK: - Actions
     @objc
     private func openSearch() {
@@ -291,23 +307,13 @@ final class SearchViewController: UIViewController {
         searchTextField.text = nil
         leftViewSearchTextField.tintColor = UIColor(color: .base10)
         
-        searchTextFieldRightConstarint?.isActive = false
-        searchTextFieldRightConstarint = searchTextField.trailingAnchor
-            .constraint(
-                equalTo: view.trailingAnchor,
-                constant: -Constant.SearchTextField.horizontalOffset
-            )
-        
-        searchTextFieldRightConstarint?.isActive = true
-
-        UIView.animate(withDuration: 0.2) { [weak self] in
-            self?.view.layoutIfNeeded()
-        }
+        cancelAnimation()
         
         clearSearchTextFieldButton.isHidden = true
         cancelButton.isHidden = true
         searchHistoryTable.isHidden = true
         collection.isHidden = false
+        interactor.resetSearch()
     }
     
     @objc
@@ -339,6 +345,21 @@ extension SearchViewController: UITextFieldDelegate {
             clearSearchTextFieldButton.isHidden = true
         }
         
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.backgroundColor = UIColor(color: .base80)
+        textField.resignFirstResponder()
+        
+        leftViewSearchTextField.tintColor = UIColor(color: .base10)
+        cancelAnimation()
+        
+        clearSearchTextFieldButton.isHidden = true
+        cancelButton.isHidden = true
+        searchHistoryTable.isHidden = true
+        collection.isHidden = false
+        interactor.loadSearch(with: textField.text)
         return true
     }
 }
