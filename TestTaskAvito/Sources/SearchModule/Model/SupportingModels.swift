@@ -17,3 +17,7 @@ enum CollectionSection: Int, CaseIterable {
     case filters
     case products
 }
+
+enum UserDefaultsKeys: String {
+    case history
+}

@@ -7,10 +7,11 @@
 
 import UIKit
 
-final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
+final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {    
     // MARK: - Private fields
     private let presenter: SearchPresentationLogic & SearchRouterLogic
     private let productsService: ProductsWorker
+    private let storageService: UserDefaultsLogic
     
     // MARK: - Variables
     var filters: FiltersModel
@@ -20,11 +21,13 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
     init(
         presenter: SearchPresentationLogic & SearchRouterLogic,
         service: ProductsWorker,
+        storage: UserDefaultsLogic = UserDefaultsService(),
         filters: FiltersModel = FiltersModel()
     ) {
         self.presenter = presenter
         self.productsService = service
         self.filters = filters
+        self.storageService = storage
     }
     
     // MARK: - Methods
@@ -53,6 +56,24 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
     }
     
     func loadSearch(with title: String?) {
+        if let title = title, !title.isEmpty {
+            var history: [String] = storageService.get(
+                forKey: UserDefaultsKeys.history.rawValue,
+                defaultValue: []
+            )
+            
+            history.removeAll { $0 == title }
+            history.insert(title, at: 0)
+            if history.count > 7 {
+                history.removeLast()
+            }
+
+            storageService.set(
+                value: history,
+                forKey: UserDefaultsKeys.history.rawValue
+            )
+        }
+        
         filters.title = title
         refresh()
     }
@@ -181,5 +202,29 @@ extension SearchInteractor: UICollectionViewDataSource {
             
             return cell
         }
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension SearchInteractor: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let history = storageService.get(forKey: UserDefaultsKeys.history.rawValue, defaultValue: [])
+        return history.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: SearchQueryCell.reuseId
+        ) as? SearchQueryCell else {
+            return UITableViewCell()
+        }
+        
+        let history: [String] = storageService.get(
+            forKey: UserDefaultsKeys.history.rawValue,
+            defaultValue: []
+        )
+        
+        cell.configure(query: history[indexPath.row])
+        return cell
     }
 }

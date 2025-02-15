@@ -241,7 +241,7 @@ final class SearchViewController: UIViewController {
     
     private func setUpSearchHistoryTable() {
         searchHistoryTable.delegate = self
-        searchHistoryTable.dataSource = self
+        searchHistoryTable.dataSource = interactor
         searchHistoryTable.backgroundColor = UIColor(color: .base70)
         searchHistoryTable.isHidden = true
         searchHistoryTable.separatorStyle = .none
@@ -298,6 +298,7 @@ final class SearchViewController: UIViewController {
         
         collection.isHidden = true
         searchHistoryTable.isHidden = false
+        searchHistoryTable.reloadData()
     }
     
     @objc
@@ -432,23 +433,5 @@ extension SearchViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         clearSearchTextFieldButton.isHidden = true
         searchTextField.resignFirstResponder()
-    }
-}
-
-// MARK: - UITableViewDataSource
-extension SearchViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        3
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = searchHistoryTable.dequeueReusableCell(
-            withIdentifier: SearchQueryCell.reuseId
-        ) as? SearchQueryCell else {
-            return UITableViewCell()
-        }
-        
-        cell.configure(query: "Sandals")
-        return cell
     }
 }

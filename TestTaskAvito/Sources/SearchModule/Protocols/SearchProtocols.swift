@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol SearchBusinessLogic: UICollectionViewDataSource {
+protocol SearchBusinessLogic: UICollectionViewDataSource, UITableViewDataSource {
     func loadStart()
     func loadSelectCategory()
     func loadPriceSelector()
