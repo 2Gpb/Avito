@@ -124,8 +124,8 @@ final class ProductCardViewController: UIViewController {
         setUp()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         interactor.loadStart()
     }
     
@@ -351,6 +351,16 @@ final class ProductCardViewController: UIViewController {
     
     @objc
     private func toCartButtonTapped() {
-        tabBarController?.selectedIndex = 1
+        if let viewControllers = navigationController?.viewControllers, viewControllers.count > 1 {
+            let previousVC = viewControllers[viewControllers.count - 2]
+            if previousVC is SearchViewController {
+                tabBarController?.selectedIndex = 1
+                if let navController = tabBarController?.viewControllers?[1] as? UINavigationController {
+                    navController.popToRootViewController(animated: true)
+                }
+            } else {
+                navigationController?.popViewController(animated: true)
+            }
+        }
     }
 }

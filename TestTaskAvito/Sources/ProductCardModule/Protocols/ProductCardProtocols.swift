@@ -18,7 +18,7 @@ protocol ProductCardBusinessLogic {
 
 protocol ProductCardPresentationLogic {
     func present(shareSheet: UIActivityViewController)
-    func presentStart(with model: ProductModel.Element, number: Int)
+    func presentStart(with model: ProductCardModel, number: Int)
     func present(number: Int)
 }
 
@@ -27,5 +27,5 @@ protocol ProductCardRouterLogic {
 }
 
 protocol ProductCoreDataServiceLogic: CoreDataService {
-    func add(element: ProductModel.Element)
+    func add(element: ProductCardModel)
 }

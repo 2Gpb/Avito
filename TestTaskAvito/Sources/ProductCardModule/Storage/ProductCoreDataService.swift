@@ -19,7 +19,7 @@ final class ProductCoreDataService: CoreDataService, ProductCoreDataServiceLogic
     }
     
     // MARK: - CRUD
-    func add(element: ProductModel.Element) {
+    func add(element: ProductCardModel) {
         guard let entityDescription = NSEntityDescription.entity(
             forEntityName: "Product",
             in: context
@@ -29,10 +29,10 @@ final class ProductCoreDataService: CoreDataService, ProductCoreDataServiceLogic
         product.number = 1
         product.id = Int16(element.id)
         product.title = element.title
-        product.price = "\(element.price)$"
+        product.price = element.price
         product.desc = element.description
-        product.category = element.category.name
-        product.imageAddress = element.images[0]
+        product.category = element.category
+        product.imageAddress = element.imageAddress
         
         appDelegate.saveContext()
     }

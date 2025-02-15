@@ -13,4 +13,6 @@ struct ShoppingListItemModel {
     let name: String
     let price: String
     let count: Int
+    let category: String
+    let description: String
 }

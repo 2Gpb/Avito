@@ -22,6 +22,40 @@ final class ShoppingListInteractor: NSObject, ShoppingListBusinessLogic & Shoppi
     
     // MARK: - Methods
     func loadStart() {
+        convertProducts()
+        presenter.presentProducts()
+    }
+    
+    func refresh() {
+        loadStart()
+    }
+    
+    func clearCart() {
+        service.deleteAll()
+        products.removeAll()
+        presenter.presentProducts()
+    }
+    
+    func shareCart() {
+        let shareItems = products.map {
+            "\($0.name)"
+        }
+        
+        presenter.presentShareSheet(shareItems)
+    }
+    
+    func deleteProduct(at id: Int) {
+        service.deleteElement(of: id)
+        convertProducts()
+        presenter.presentProducts()
+    }
+    
+    func loadProductCard(for index: Int) {
+        presenter.presentProductCard(with: products[index])
+    }
+    
+    // MARK: - Private methods
+    private func convertProducts(){
         let products = service.getAllProducts()
         self.products = []
         for product in products {
@@ -31,26 +65,12 @@ final class ShoppingListInteractor: NSObject, ShoppingListBusinessLogic & Shoppi
                     image: product.imageAddress ?? "",
                     name: product.title ?? "",
                     price: product.price ?? "",
-                    count: Int(product.number)
+                    count: Int(product.number),
+                    category: product.category ?? "",
+                    description: product.desc ?? ""
                 )
             )
         }
-    
-        presenter.presentProducts()
-    }
-    
-    func refresh() {
-        presenter.presentProducts()
-    }
-    
-    func clearCart() {
-        service.deleteAll()
-        products.removeAll()
-        presenter.presentProducts()
-    }
-    
-    func shareCart(shareSheet: UIActivityViewController) {
-        presenter.presentShareSheet(shareSheet: shareSheet)
     }
 }
 
@@ -78,12 +98,19 @@ extension ShoppingListInteractor: UICollectionViewDataSource {
             let productId = self?.products[indexPath.item].id
             self?.service.decreaseNumber(of: productId ?? 0)
             cell.setCount(self?.service.getNumber(of: productId ?? 0) ?? 0)
+            if self?.service.getNumber(of: productId ?? 0) ?? 0 == 0 {
+                self?.refresh()
+            }
         }
         
         cell.plusTapped = { [weak self] in
             let productId = self?.products[indexPath.item].id
             self?.service.increaseNumber(of: productId ?? 0)
             cell.setCount(self?.service.getNumber(of: productId ?? 0) ?? 0)
+        }
+        
+        cell.moreTapped = { [weak self] in
+            self?.presenter.presentAlert(id: self?.products[indexPath.item].id ?? 0)
         }
         
         cell.configure(with: products[indexPath.item])

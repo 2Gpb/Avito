@@ -66,6 +66,7 @@ final class ShoppingListCell: UICollectionViewCell {
     
     var plusTapped: (() -> Void)?
     var minusTapped: (() -> Void)?
+    var moreTapped: (() -> Void)?
     
     // MARK: - Lifecycle
     override init(frame: CGRect) {
@@ -177,7 +178,7 @@ final class ShoppingListCell: UICollectionViewCell {
     // MARK: - Actions
     @objc
     private func moreButtonTapped() {
-        
+        moreTapped?()
     }
     
     @objc

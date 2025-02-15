@@ -6,6 +6,7 @@
 //
 
 struct ProductCardModel {
+    let id: Int
     let imageAddress: String
     let price: String
     let title: String

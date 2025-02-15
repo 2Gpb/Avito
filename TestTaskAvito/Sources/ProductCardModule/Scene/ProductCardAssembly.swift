@@ -8,7 +8,7 @@
 import UIKit
 
 final class ProductCardAssembly {
-    static func build(with model: ProductModel.Element) -> UIViewController {
+    static func build(with model: ProductCardModel) -> UIViewController {
         let service: ProductCoreDataServiceLogic = ProductCoreDataService()
         let presenter = ProductCardPresenter()
         let interactor = ProductCardInteractor(presenter: presenter, model: model, service: service)

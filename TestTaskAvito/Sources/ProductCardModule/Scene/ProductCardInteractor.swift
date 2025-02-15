@@ -10,13 +10,13 @@ import UIKit
 final class ProductCardInteractor: ProductCardBusinessLogic {
     // MARK: - Private fields
     private let presenter: ProductCardPresentationLogic & ProductCardRouterLogic
-    private let productModel: ProductModel.Element
+    private let productModel: ProductCardModel
     private let service: ProductCoreDataServiceLogic
     
     // MARK: - Lifecycle
     init(
         presenter: ProductCardPresentationLogic & ProductCardRouterLogic,
-        model: ProductModel.Element,
+        model: ProductCardModel,
         service: ProductCoreDataServiceLogic
     ) {
         self.presenter = presenter

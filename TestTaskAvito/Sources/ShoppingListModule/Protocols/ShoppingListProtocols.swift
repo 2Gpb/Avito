@@ -9,9 +9,11 @@ import UIKit
 
 protocol ShoppingListBusinessLogic: UICollectionViewDataSource {
     func loadStart()
-    func shareCart(shareSheet: UIActivityViewController)
+    func shareCart()
     func refresh()
     func clearCart()
+    func deleteProduct(at id: Int)
+    func loadProductCard(for index: Int)
 }
 
 protocol ShoppingListPresentationLogic {
@@ -19,7 +21,9 @@ protocol ShoppingListPresentationLogic {
 }
 
 protocol ShoppingListRouterLogic {
-    func presentShareSheet(shareSheet: UIActivityViewController)
+    func presentShareSheet(_ shareSheet: [String])
+    func presentAlert(id: Int)
+    func presentProductCard(with model: ShoppingListItemModel)
 }
 
 protocol ShoppingListDataStore {

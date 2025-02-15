@@ -12,16 +12,8 @@ final class ProductCardPresenter: ProductCardPresentationLogic {
     weak var view: ProductCardViewController?
     
     // MARK: - Methods
-    func presentStart(with model: ProductModel.Element, number: Int) {
-        let newModel = ProductCardModel(
-            imageAddress: model.images[0],
-            price: "\(model.price)$",
-            title: model.title,
-            description: model.description,
-            category: model.category.name
-        )
-        
-        view?.displayStart(model: newModel, number: number)
+    func presentStart(with model: ProductCardModel, number: Int) {
+        view?.displayStart(model: model, number: number)
     }
     
     func present(number: Int) {

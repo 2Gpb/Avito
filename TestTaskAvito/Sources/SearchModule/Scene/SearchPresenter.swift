@@ -35,7 +35,16 @@ extension SearchPresenter: SearchRouterLogic {
     
     func routeToProductCard(with model: ProductModel.Element) {
         view?.navigationController?.pushViewController(
-            ProductCardAssembly.build(with: model),
+            ProductCardAssembly.build(
+                with: ProductCardModel(
+                    id: model.id,
+                    imageAddress: model.images[0],
+                    price: "\(model.price)$",
+                    title: model.title,
+                    description: model.description,
+                    category: model.category.name
+                )
+            ),
             animated: true
         )
     }

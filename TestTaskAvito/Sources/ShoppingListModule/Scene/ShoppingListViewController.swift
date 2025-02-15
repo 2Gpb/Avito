@@ -55,6 +55,12 @@ final class ShoppingListViewController: UIViewController {
             static let lineSpacing: CGFloat = 20
             static let edgeInsets: UIEdgeInsets = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         }
+        
+        enum Alert {
+            static let title: String = "Do you want to delete this product?"
+            static let cancelTitle: String = "Cancel"
+            static let deleteTitle: String = "Delete"
+        }
     }
     
     // MARK: - Private fields
@@ -65,6 +71,7 @@ final class ShoppingListViewController: UIViewController {
     private let shareButton: UIButton = UIButton(type: .system)
     private var buyButton: UIButton = UIButton(type: .system)
     private var clearButton: UIButton = UIButton(type: .system)
+    private let alert: UIAlertController = UIAlertController()
     private let collection: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewFlowLayout()
@@ -86,14 +93,40 @@ final class ShoppingListViewController: UIViewController {
         setUp()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         interactor.loadStart()
     }
     
     // MARK: - Methods
     func displayStart() {
         collection.reloadData()
+    }
+    
+    func setUpAlert(id: Int) -> UIAlertController {
+        let alert = UIAlertController(
+            title: Constant.Alert.title,
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        
+        let cancelAction = UIAlertAction(
+            title: Constant.Alert.cancelTitle,
+            style: .cancel,
+            handler: nil
+        )
+        
+        let deleteAction = UIAlertAction(
+            title: Constant.Alert.deleteTitle,
+            style: .destructive,
+            handler: { [weak self] _ in
+            self?.interactor.deleteProduct(at: id)
+        })
+        
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        
+        return alert
     }
     
     // MARK: - SetUp
@@ -125,7 +158,7 @@ final class ShoppingListViewController: UIViewController {
         shareButton.setImage(Constant.ShareButton.image, for: .normal)
         shareButton.tintColor = UIColor(color: .base0)
         shareButton.backgroundColor = .clear
-        shareButton.addTarget(self, action: #selector(handleShare), for: .touchUpInside)
+        shareButton.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
         
         view.addSubview(shareButton)
         shareButton.pinTop(to: view.safeAreaLayoutGuide.topAnchor, Constant.ShareButton.topOffset)
@@ -138,6 +171,7 @@ final class ShoppingListViewController: UIViewController {
         collection.delegate = self
         collection.dataSource = interactor
         collection.backgroundColor = .clear
+        collection.isScrollEnabled = true
         collection.register(ShoppingListCell.self, forCellWithReuseIdentifier: ShoppingListCell.reuseId)
         
         view.addSubview(collection)
@@ -176,13 +210,8 @@ final class ShoppingListViewController: UIViewController {
     
     // MARK: - Actions
     @objc
-    private func handleShare() {
-        let activityViewController: UIActivityViewController = UIActivityViewController(
-            activityItems: ["test2"],
-            applicationActivities: nil
-        )
-        
-        interactor.shareCart(shareSheet: activityViewController)
+    private func shareButtonTapped() {        
+        interactor.shareCart()
     }
     
     @objc private func clearButtonTapped() {
@@ -192,6 +221,12 @@ final class ShoppingListViewController: UIViewController {
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension ShoppingListViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        interactor.loadProductCard(for: indexPath.item)
+    }
+    
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
