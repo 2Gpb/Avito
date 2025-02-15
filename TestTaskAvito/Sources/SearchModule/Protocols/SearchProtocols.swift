@@ -12,22 +12,25 @@ protocol SearchBusinessLogic: UICollectionViewDataSource {
     func loadSelectCategory()
     func loadPriceSelector()
     func loadProductCard(for index: Int)
-    func loadProducts(
-        title: String?,
-        priceMin: Int?,
-        priceMax: Int?,
-        categoryId: Int?
-    )
 }
 
 protocol SearchPresentationLogic {
     func presentStart()
+    func presentFilters()
 }
 
 protocol SearchRouterLogic {
-    func routeToSelectCategory()
-    func routeToPriceSelector()
     func routeToProductCard(with model: ProductModel.Element)
+    func routeToSelectCategory(
+        completion: @escaping (Int, String) -> Void,
+        currentCategoryId: Int?
+    )
+    
+    func routeToPriceSelector(
+        completion: @escaping (Int?, Int?) -> Void,
+        currentMin: Int?,
+        currentMax: Int?
+    )
 }
 
 protocol ProductsWorker {

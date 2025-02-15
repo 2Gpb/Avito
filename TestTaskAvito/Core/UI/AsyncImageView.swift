@@ -53,7 +53,6 @@ final class AsyncImageView: UIView {
             }
             
             guard let data = data, let image = UIImage(data: data) else {
-                print(1)
                 self?.showWarning()
                 return
             }

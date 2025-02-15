@@ -80,8 +80,11 @@ final class PriceViewController: UIViewController {
     private var applyButton: UIButton = UIButton(type: .system)
     
     // MARK: - Lifecycle
-    init(interactor: PriceBusinessLogic) {
+    init(interactor: PriceBusinessLogic, priceMin: Int?, priceMax: Int?) {
         self.interactor = interactor
+        self.fromPriceTextField.text = priceMin.map { "\($0)" } ?? " $"
+        self.toPriceTextField.text = priceMax.map { "\($0)" } ?? " $"
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -170,7 +173,6 @@ final class PriceViewController: UIViewController {
     
     private func setUpFromPriceTextField() {
         fromClearButton.addTarget(self, action: #selector(fromClearButtonTapped), for: .touchUpInside)
-        fromClearButton.isHidden = true
         let views = createLeftAndRightViews(button: fromClearButton, text: Constant.TextFields.fromPriceLabel)
         fromPriceTextField = ViewFactory.shared.setUpTextField(
             textField: fromPriceTextField,
@@ -179,11 +181,14 @@ final class PriceViewController: UIViewController {
             rightView: views.rightView
         )
         
+        if fromPriceTextField.text == " $" {
+            fromClearButton.isHidden = true
+        }
+        
         let gesture = UITapGestureRecognizer(target: self, action: #selector(fromPriceTapped))
         fromPriceTextField.addGestureRecognizer(gesture)
         fromPriceTextField.delegate = self
         fromPriceTextField.keyboardType = .numberPad
-        fromPriceTextField.text = Constant.TextFields.defaultText
         updateText(textField: fromPriceTextField)
         
         view.addSubview(fromPriceTextField)
@@ -194,7 +199,6 @@ final class PriceViewController: UIViewController {
     
     private func setUpToPriceTextField() {
         toClearButton.addTarget(self, action: #selector(toClearButtonTapped), for: .touchUpInside)
-        toClearButton.isHidden = true
         let views = createLeftAndRightViews(button: toClearButton, text: Constant.TextFields.toPriceLabel)
         toPriceTextField = ViewFactory.shared.setUpTextField(
             textField: toPriceTextField,
@@ -203,11 +207,14 @@ final class PriceViewController: UIViewController {
             rightView: views.rightView
         )
         
+        if toPriceTextField.text == " $" {
+            toClearButton.isHidden = true
+        }
+        
         let gesture = UITapGestureRecognizer(target: self, action: #selector(toPriceTapped))
         toPriceTextField.addGestureRecognizer(gesture)
         toPriceTextField.delegate = self
         toPriceTextField.keyboardType = .numberPad
-        toPriceTextField.text = Constant.TextFields.defaultText
         updateText(textField: toPriceTextField)
         
         view.addSubview(toPriceTextField)
@@ -216,7 +223,10 @@ final class PriceViewController: UIViewController {
         toPriceTextField.setWidth((view.frame.width - Constant.TextFields.offset) / CGFloat(2))
     }
     
-    private func createLeftAndRightViews(button: UIButton, text: String) -> (leftView: UIView, rightView: UIView) {
+    private func createLeftAndRightViews(
+        button: UIButton,
+        text: String
+    ) -> (leftView: UIView, rightView: UIView) {
         let leftView: UIView = UIView()
         if text.count <= 2 {
             leftView.frame = Constant.TextFields.smallLeftViewFrame
@@ -255,6 +265,11 @@ final class PriceViewController: UIViewController {
         applyButton.pinHorizontal(to: view, Constant.ApplyButton.horizontalOffset)
     }
     
+    private func formatString(_ input: String) -> String {
+        let allowedCharacters = CharacterSet(charactersIn: "0123456789")
+        return input.filter { allowedCharacters.contains($0.unicodeScalars.first!) }
+    }
+    
     // MARK: - Actions
     @objc
     private func closeButtonTapped() {
@@ -263,7 +278,10 @@ final class PriceViewController: UIViewController {
     
     @objc
     private func applyButtonTapped() {
-        interactor.closeScreen()
+        interactor.applyFilter(
+            minPrice: Int(formatString(fromPriceTextField.text ?? "")),
+            maxPrice: Int(formatString(toPriceTextField.text ?? ""))
+        )
     }
     
     @objc
@@ -304,14 +322,14 @@ extension PriceViewController: UITextFieldDelegate {
             fromClearButton.isHidden = false
             maxLength = Constant.TextFields.maxLength
             let newText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
-            if newText.isEmpty {
+            if formatString(newText).isEmpty {
                 fromClearButton.isHidden = true
             }
         } else {
             toClearButton.isHidden = false
             maxLength = Constant.TextFields.maxLength + 1
             let newText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
-            if newText.isEmpty {
+            if formatString(newText).isEmpty {
                 toClearButton.isHidden = true
             }
         }

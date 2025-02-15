@@ -54,6 +54,8 @@ final class FiltersViewCell: UICollectionViewCell {
     // MARK: - Variables
     var openSelectCategory: (() -> Void)?
     var openPriceSelector: (() -> Void)?
+    var showProducts: (() -> Void)?
+    var resetFilters: (() -> Void)?
     
     // MARK: - UI Components
     private var categoryTextField: UITextField = UITextField()
@@ -70,6 +72,20 @@ final class FiltersViewCell: UICollectionViewCell {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError(Constant.Error.message)
+    }
+    
+    // MARK: - Methods
+    func configure(category name: String?, min: Int?, max: Int?) {
+        self.categoryTextField.text = name
+        if let min = min, let max = max {
+            self.priceTextField.text = "$\(min) - $\(max)"
+        } else if let min = min {
+            self.priceTextField.text = "from $\(min)"
+        } else if let max = max {
+            self.priceTextField.text = "up to $\(max)"
+        } else {
+            self.priceTextField.text = nil
+        }
     }
     
     // MARK: - SetUp
@@ -142,6 +158,8 @@ final class FiltersViewCell: UICollectionViewCell {
             backgroundColor: .clear
         )
         
+        resetButton.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
+        
         contentView.addSubview(resetButton)
         resetButton.pinTop(to: priceTextField.bottomAnchor, Constant.Buttons.topOffst)
         resetButton.pinRight(to: contentView)
@@ -155,6 +173,8 @@ final class FiltersViewCell: UICollectionViewCell {
                 titleColor: UIColor(color: .base80),
                 backgroundColor: UIColor(color: .base0)
             )
+        
+        showButton.addTarget(self, action: #selector(showButtonTapped), for: .touchUpInside)
         
         contentView.addSubview(showButton)
         showButton.pinTop(to: categoryTextField.bottomAnchor, Constant.Buttons.topOffst)
@@ -173,6 +193,16 @@ final class FiltersViewCell: UICollectionViewCell {
     private func openPriceRange() {
         priceTextField.resignFirstResponder()
         openPriceSelector?()
+    }
+    
+    @objc
+    private func showButtonTapped() {
+        showProducts?()
+    }
+    
+    @objc
+    private func resetButtonTapped() {
+        resetFilters?()
     }
 }
 
