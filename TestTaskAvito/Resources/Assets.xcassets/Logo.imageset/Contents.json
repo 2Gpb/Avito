@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "logo-avito.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
