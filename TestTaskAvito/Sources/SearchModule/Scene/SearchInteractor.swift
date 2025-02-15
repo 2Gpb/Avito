@@ -59,7 +59,11 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
     // MARK: - Private fields
     private func updateProducts(_ products: ProductsResponse) {
         self.products = products
-        presenter.presentStart()
+        if self.products.isEmpty {
+            presenter.presentStart(isHidden: false)
+        } else {
+            presenter.presentStart(isHidden: true)
+        }
     }
     
     private func loadProducts(
@@ -134,7 +138,11 @@ extension SearchInteractor: UICollectionViewDataSource {
             }
             
             cell.showProducts = { [weak self] in
-                self?.loadStart()
+                self?.loadProducts(
+                    priceMin: self?.filters.priceFrom,
+                    priceMax: self?.filters.priceTo,
+                    categoryId: self?.filters.categoryId
+                )
             }
             
             cell.resetFilters = { [weak self] in
@@ -142,7 +150,11 @@ extension SearchInteractor: UICollectionViewDataSource {
                 self?.filters.categoryName = nil
                 self?.filters.priceFrom = nil
                 self?.filters.priceTo = nil
-                self?.loadProducts()
+                self?.loadProducts(
+                    priceMin: self?.filters.priceFrom,
+                    priceMax: self?.filters.priceTo,
+                    categoryId: self?.filters.categoryId
+                )
             }
             
             return cell

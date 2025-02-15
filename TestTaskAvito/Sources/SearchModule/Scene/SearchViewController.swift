@@ -70,6 +70,7 @@ final class SearchViewController: UIViewController {
     private let clearSearchTextFieldButton: UIButton = UIButton(type: .system)
     private let leftViewSearchTextField: UIImageView = UIImageView()
     private let rightViewSearchTextField: UIImageView = UIImageView()
+    private let emptyStateView: EmptyStateView = EmptyStateView()
     private let collection: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewFlowLayout()
@@ -97,8 +98,9 @@ final class SearchViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func displayStart() {
+    func displayStart(_ isHidden: Bool) {
         collection.reloadData()
+        emptyStateView.isHidden = isHidden
     }
     
     func displayFilters() {
@@ -116,6 +118,7 @@ final class SearchViewController: UIViewController {
         
         setUpSearchTextField()
         setUpProductCollection()
+        setUpEmptyState()
         
         setUpCancelButton()
         setUpSearchHistoryTable()
@@ -206,6 +209,15 @@ final class SearchViewController: UIViewController {
         collection.pinTop(to: searchTextField.bottomAnchor, Constant.Collection.topOffset)
         collection.pinHorizontal(to: view)
         collection.pinBottom(to: view)
+    }
+    
+    private func setUpEmptyState() {
+        emptyStateView.isHidden = true
+        
+        view.addSubview(emptyStateView)
+        emptyStateView.pinTop(to: collection.topAnchor, Constant.Collection.filtersHeight + 40)
+        emptyStateView.pinHorizontal(to: view)
+        emptyStateView.pinBottom(to: view)
     }
     
     private func setUpCancelButton() {

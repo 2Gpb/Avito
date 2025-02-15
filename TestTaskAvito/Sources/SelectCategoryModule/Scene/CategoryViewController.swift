@@ -16,7 +16,7 @@ final class CategoryViewController: UIViewController {
         
         enum Sheet {
             static let cornerRadius: CGFloat = 16
-            static let height: CGFloat = 600
+            static let height: CGFloat = 320
         }
         
         enum WrapView {

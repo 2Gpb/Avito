@@ -15,7 +15,7 @@ protocol SearchBusinessLogic: UICollectionViewDataSource {
 }
 
 protocol SearchPresentationLogic {
-    func presentStart()
+    func presentStart(isHidden: Bool)
     func presentFilters()
 }
 
