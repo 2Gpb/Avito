@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		D0398C7E2D6224AA0074CAE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D073A5272D5A8B5000AD4367 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D073A52E2D5A8B5000AD4367;
+			remoteInfo = TestTaskAvito;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		D039890F2D609E7E0074CAE5 /* TestTaskAvito.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = TestTaskAvito.app; path = "/Users/peter/Documents/Swift/TestTaskAvito/build/Debug-iphoneos/TestTaskAvito.app"; sourceTree = "<absolute>"; };
+		D0398A7D2D6145670074CAE5 /* TestTaskAvito.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = TestTaskAvito.app; path = "/Users/peter/Documents/Swift/TestTaskAvito/build/Debug-iphoneos/TestTaskAvito.app"; sourceTree = "<absolute>"; };
+		D0398C7A2D6224AA0074CAE5 /* TestTaskAvitoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = TestTaskAvitoTests.xctest; path = "/Users/peter/Documents/Swift/TestTaskAvito/build/Debug-iphoneos/TestTaskAvito.app/PlugIns/TestTaskAvitoTests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -21,6 +32,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		D0398C7B2D6224AA0074CAE5 /* TestTaskAvitoTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TestTaskAvitoTests;
+			sourceTree = "<group>";
+		};
 		D073A56D2D5A8CBB00AD4367 /* TestTaskAvito */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -32,6 +48,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		D0398C772D6224AA0074CAE5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D073A52C2D5A8B5000AD4367 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -46,12 +69,36 @@
 			isa = PBXGroup;
 			children = (
 				D073A56D2D5A8CBB00AD4367 /* TestTaskAvito */,
+				D0398C7B2D6224AA0074CAE5 /* TestTaskAvitoTests */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		D0398C792D6224AA0074CAE5 /* TestTaskAvitoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D0398C802D6224AA0074CAE5 /* Build configuration list for PBXNativeTarget "TestTaskAvitoTests" */;
+			buildPhases = (
+				D0398C762D6224AA0074CAE5 /* Sources */,
+				D0398C772D6224AA0074CAE5 /* Frameworks */,
+				D0398C782D6224AA0074CAE5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D0398C7F2D6224AA0074CAE5 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D0398C7B2D6224AA0074CAE5 /* TestTaskAvitoTests */,
+			);
+			name = TestTaskAvitoTests;
+			packageProductDependencies = (
+			);
+			productName = TestTaskAvitoTests;
+			productReference = D0398C7A2D6224AA0074CAE5 /* TestTaskAvitoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		D073A52E2D5A8B5000AD4367 /* TestTaskAvito */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D073A5422D5A8B5100AD4367 /* Build configuration list for PBXNativeTarget "TestTaskAvito" */;
@@ -71,7 +118,7 @@
 			packageProductDependencies = (
 			);
 			productName = TestTaskAvito;
-			productReference = D039890F2D609E7E0074CAE5 /* TestTaskAvito.app */;
+			productReference = D0398A7D2D6145670074CAE5 /* TestTaskAvito.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -84,6 +131,10 @@
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
+					D0398C792D6224AA0074CAE5 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = D073A52E2D5A8B5000AD4367;
+					};
 					D073A52E2D5A8B5000AD4367 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -104,11 +155,19 @@
 			projectRoot = "";
 			targets = (
 				D073A52E2D5A8B5000AD4367 /* TestTaskAvito */,
+				D0398C792D6224AA0074CAE5 /* TestTaskAvitoTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		D0398C782D6224AA0074CAE5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D073A52D2D5A8B5000AD4367 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -119,6 +178,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		D0398C762D6224AA0074CAE5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D073A52B2D5A8B5000AD4367 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -128,7 +194,51 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		D0398C7F2D6224AA0074CAE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D073A52E2D5A8B5000AD4367 /* TestTaskAvito */;
+			targetProxy = D0398C7E2D6224AA0074CAE5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		D0398C812D6224AA0074CAE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W4G8RWL3P3;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = rut.TestTaskAvitoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestTaskAvito.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TestTaskAvito";
+			};
+			name = Debug;
+		};
+		D0398C822D6224AA0074CAE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W4G8RWL3P3;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = rut.TestTaskAvitoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestTaskAvito.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TestTaskAvito";
+			};
+			name = Release;
+		};
 		D073A5432D5A8B5100AD4367 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -307,6 +417,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		D0398C802D6224AA0074CAE5 /* Build configuration list for PBXNativeTarget "TestTaskAvitoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D0398C812D6224AA0074CAE5 /* Debug */,
+				D0398C822D6224AA0074CAE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D073A52A2D5A8B5000AD4367 /* Build configuration list for PBXProject "TestTaskAvito" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

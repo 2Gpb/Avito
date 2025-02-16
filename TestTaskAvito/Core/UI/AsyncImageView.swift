@@ -45,20 +45,23 @@ final class AsyncImageView: UIView {
             return
         }
         
+        if let img = ImageCache.shared.getImage(forKey: url.absoluteString) {
+            image.image = img
+            shimmer.isHidden = true
+            shimmer.stopShimmering()
+            return
+        }
+        
         URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            if error != nil  {
+            guard let data = data, let image = UIImage(data: data), error == nil else {
                 self?.showWarning()
                 print(error?.localizedDescription ?? "Unknown error")
                 return
             }
             
-            guard let data = data, let image = UIImage(data: data) else {
-                self?.showWarning()
-                return
-            }
-            
             DispatchQueue.main.async { [weak self] in
                 guard self?.currentLoadingURL == url else { return }
+                ImageCache.shared.setImage(image: image, forkey: url.absoluteString)
                 self?.image.image = image
                 self?.shimmer.isHidden = true
                 self?.shimmer.stopShimmering()

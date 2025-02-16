@@ -1,13 +1,13 @@
 //
-//  EmptyState.swift
+//  ErrorState.swift
 //  TestTaskAvito
 //
-//  Created by Peter on 15.02.2025.
+//  Created by Peter on 16.02.2025.
 //
 
 import UIKit
 
-final class EmptyStateView: UIView {
+final class StateView: UIView {
     // MARK: - Constants
     private enum Constant {
         enum Error {
@@ -15,18 +15,12 @@ final class EmptyStateView: UIView {
         }
         
         enum Image {
-            static let image: UIImage? = UIImage(systemName: "magnifyingglass")
             static let bottomOffset: CGFloat = 16
             static let height: CGFloat = 72
             static let width: CGFloat = 80
         }
         
-        enum Title {
-            static let text: String = "No results for your query"
-        }
-        
         enum Description {
-            static let text: String = "Try changing the search terms"
             static let top: CGFloat = 12
         }
     }
@@ -37,9 +31,12 @@ final class EmptyStateView: UIView {
     private var descriptionLabel: UILabel = UILabel()
     
     // MARK: - Lifecycle
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(image: UIImage?, title: String, description: String) {
+        super.init(frame: .zero)
         setUp()
+        self.imageView.image = image
+        self.titleLabel.text = title
+        self.descriptionLabel.text = description
     }
     
     @available(*, unavailable)
@@ -63,15 +60,12 @@ final class EmptyStateView: UIView {
             textColor: UIColor(color: .base0)
         )
         
-        titleLabel.text = Constant.Title.text
-        
         addSubview(titleLabel)
         titleLabel.pinCenterX(to: self)
         titleLabel.pinCenterY(to: self)
     }
     
     private func setUpImageView() {
-        imageView.image = Constant.Image.image
         imageView.tintColor = UIColor(color: .base10)
         
         addSubview(imageView)
@@ -87,8 +81,6 @@ final class EmptyStateView: UIView {
             font: TextStyle.bodySmallMedium.font,
             textColor: UIColor(color: .base10)
         )
-        
-        descriptionLabel.text = Constant.Description.text
         
         addSubview(descriptionLabel)
         descriptionLabel.pinTop(to: titleLabel.bottomAnchor, Constant.Description.top)

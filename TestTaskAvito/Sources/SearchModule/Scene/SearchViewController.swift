@@ -58,9 +58,22 @@ final class SearchViewController: UIViewController {
             static let topOffset: CGFloat = 12
             static let heightCell: CGFloat = 55
         }
+        
+        enum ErrorState {
+            static let image: UIImage? = UIImage(systemName: "exclamationmark.square")
+            static let title: String = "Data loading error"
+            static let description: String = "Press ‘Show items’ to try again"
+        }
+        
+        enum EmptyState {
+            static let image: UIImage? = UIImage(systemName: "magnifyingglass")
+            static let title: String = "No results for your query"
+            static let description: String = "Try changing the search terms"
+        }
     }
+    
     // MARK: - Private fields
-    private var interactor: SearchBusinessLogic
+    private let interactor: SearchBusinessLogic
     
     // MARK: - UI Components
     private var cancelButton: UIButton = UIButton(type: .system)
@@ -70,7 +83,20 @@ final class SearchViewController: UIViewController {
     private let clearSearchTextFieldButton: UIButton = UIButton(type: .system)
     private let leftViewSearchTextField: UIImageView = UIImageView()
     private let rightViewSearchTextField: UIImageView = UIImageView()
-    private let emptyStateView: EmptyStateView = EmptyStateView()
+    private let searchStateView: UIView = UIView()
+    private let emptyStateView: StateView = StateView(
+        image: Constant.EmptyState.image,
+        title: Constant.EmptyState.title,
+        description: Constant.EmptyState.description
+    )
+    
+    private let errorStateView: StateView = StateView(
+        image: Constant.ErrorState.image,
+        title: Constant.ErrorState.title,
+        description: Constant.ErrorState.description
+    )
+    
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
     private let collection: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewFlowLayout()
@@ -98,17 +124,38 @@ final class SearchViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func displayStart(_ isHidden: Bool) {
-        collection.reloadData()
-        emptyStateView.isHidden = isHidden
+    func displayStart(with title: String?, errorState: Bool, emptyState: Bool) {
+        searchTextField.text = title
+        
+        emptyStateView.isHidden = true
+        errorStateView.isHidden = true
+        
+        if errorState || emptyState {
+            activityIndicator.startAnimating()
+            collection.reloadData()
+        }
+        
+        if let title = title, !title.isEmpty {
+            searchStateView.isHidden = false
+            activityIndicator.startAnimating()
+            collection.reloadData()
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.activityIndicator.stopAnimating()
+            self?.emptyStateView.isHidden = !emptyState
+            self?.errorStateView.isHidden = !errorState
+            self?.searchStateView.isHidden = true
+            self?.collection.reloadData()
+        }
     }
     
     func displayFilters() {
         collection.reloadSections(IndexSet(integer: 0))
     }
     
-    func displayCategoryName(_ name: String) {
-        title = name
+    func displayClearSearch() {
+        searchTextField.text = nil
     }
     
     // MARK: - SetUp
@@ -118,10 +165,18 @@ final class SearchViewController: UIViewController {
         
         setUpSearchTextField()
         setUpProductCollection()
-        setUpEmptyState()
+        setUpStates()
         
         setUpCancelButton()
         setUpSearchHistoryTable()
+        setupActivityIndicator()
+    }
+    
+    private func setupActivityIndicator() {
+        activityIndicator.center = view.center
+        activityIndicator.color = UIColor(color: .base0)
+        view.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
     }
     
     private func setUpSearchTextField() {
@@ -212,13 +267,18 @@ final class SearchViewController: UIViewController {
         collection.pinBottom(to: view)
     }
     
-    private func setUpEmptyState() {
+    private func setUpStates() {
+        searchStateView.backgroundColor = UIColor(color: .base70)
+        searchStateView.isHidden = true
         emptyStateView.isHidden = true
+        errorStateView.isHidden = true
         
-        view.addSubview(emptyStateView)
-        emptyStateView.pinTop(to: collection.topAnchor, Constant.Collection.filtersHeight + 40)
-        emptyStateView.pinHorizontal(to: view)
-        emptyStateView.pinBottom(to: view)
+        [errorStateView, emptyStateView, searchStateView].forEach {
+            self.view.addSubview($0)
+            $0.pinTop(to: collection.topAnchor, Constant.Collection.filtersHeight + 40)
+            $0.pinHorizontal(to: self.view)
+            $0.pinBottom(to: self.view)
+        }
     }
     
     private func setUpCancelButton() {
@@ -272,6 +332,13 @@ final class SearchViewController: UIViewController {
         }
     }
     
+    private func deafaultSearch() {
+        clearSearchTextFieldButton.isHidden = true
+        cancelButton.isHidden = true
+        searchHistoryTable.isHidden = true
+        collection.isHidden = false
+    }
+    
     // MARK: - Actions
     @objc
     private func openSearch() {
@@ -280,6 +347,7 @@ final class SearchViewController: UIViewController {
         
         if searchTextField.text != "" && searchTextField.text != nil {
             clearSearchTextFieldButton.isHidden = false
+            leftViewSearchTextField.tintColor = UIColor(color: .base0)
         }
     
         searchTextFieldRightConstarint?.isActive = false
@@ -305,20 +373,16 @@ final class SearchViewController: UIViewController {
     private func cancelButtonTapped() {
         view.backgroundColor = UIColor(color: .base80)
         searchTextField.resignFirstResponder()
-        searchTextField.text = nil
         leftViewSearchTextField.tintColor = UIColor(color: .base10)
         
         cancelAnimation()
-        
-        clearSearchTextFieldButton.isHidden = true
-        cancelButton.isHidden = true
-        searchHistoryTable.isHidden = true
-        collection.isHidden = false
-        interactor.resetSearch()
+        deafaultSearch()
+        interactor.loadStart()
     }
     
     @objc
     private func dismissKeyboard() {
+        leftViewSearchTextField.tintColor = UIColor(color: .base10)
         clearSearchTextFieldButton.isHidden = true
         searchTextField.resignFirstResponder()
     }
@@ -356,10 +420,7 @@ extension SearchViewController: UITextFieldDelegate {
         leftViewSearchTextField.tintColor = UIColor(color: .base10)
         cancelAnimation()
         
-        clearSearchTextFieldButton.isHidden = true
-        cancelButton.isHidden = true
-        searchHistoryTable.isHidden = true
-        collection.isHidden = false
+        deafaultSearch()
         interactor.loadSearch(with: textField.text)
         return true
     }
@@ -432,6 +493,14 @@ extension SearchViewController: UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         clearSearchTextFieldButton.isHidden = true
+        leftViewSearchTextField.tintColor = UIColor(color: .base10)
         searchTextField.resignFirstResponder()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        deafaultSearch()
+        cancelAnimation()
+        interactor.loadSelectedQuery(with: indexPath.row)
     }
 }

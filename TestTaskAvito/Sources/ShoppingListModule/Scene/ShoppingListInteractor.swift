@@ -12,6 +12,7 @@ final class ShoppingListInteractor: NSObject, ShoppingListBusinessLogic & Shoppi
     private let presenter: ShoppingListPresentationLogic & ShoppingListRouterLogic
     private let service: ShoppingListCoreDataServiceLogic
     
+    // MARK: - Variables
     var products: [ShoppingListItemModel] = []
     
     // MARK: - Lifecycle
@@ -22,18 +23,13 @@ final class ShoppingListInteractor: NSObject, ShoppingListBusinessLogic & Shoppi
     
     // MARK: - Methods
     func loadStart() {
-        convertProducts()
-        presenter.presentProducts()
-    }
-    
-    func refresh() {
-        loadStart()
+        refresh()
     }
     
     func clearCart() {
         service.deleteAll()
         products.removeAll()
-        presenter.presentProducts()
+        presenter.presentProducts(emptyState: true)
     }
     
     func shareCart() {
@@ -46,8 +42,7 @@ final class ShoppingListInteractor: NSObject, ShoppingListBusinessLogic & Shoppi
     
     func deleteProduct(at id: Int) {
         service.deleteElement(of: id)
-        convertProducts()
-        presenter.presentProducts()
+        refresh()
     }
     
     func loadProductCard(for index: Int) {
@@ -55,6 +50,15 @@ final class ShoppingListInteractor: NSObject, ShoppingListBusinessLogic & Shoppi
     }
     
     // MARK: - Private methods
+    private func refresh() {
+        convertProducts()
+        if products.isEmpty {
+            presenter.presentProducts(emptyState: true)
+        } else {
+            presenter.presentProducts(emptyState: false)
+        }
+    }
+    
     private func convertProducts(){
         let products = service.getAllProducts()
         self.products = []

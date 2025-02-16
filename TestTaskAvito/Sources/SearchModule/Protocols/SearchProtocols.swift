@@ -13,11 +13,11 @@ protocol SearchBusinessLogic: UICollectionViewDataSource, UITableViewDataSource 
     func loadPriceSelector()
     func loadProductCard(for index: Int)
     func loadSearch(with title: String?)
-    func resetSearch()
+    func loadSelectedQuery(with index: Int)
 }
 
 protocol SearchPresentationLogic {
-    func presentStart(isHidden: Bool)
+    func presentStart(with title: String?, errorState: Bool, emptyState: Bool)
     func presentFilters()
 }
 

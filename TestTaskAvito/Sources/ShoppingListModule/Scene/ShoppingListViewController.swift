@@ -61,6 +61,12 @@ final class ShoppingListViewController: UIViewController {
             static let cancelTitle: String = "Cancel"
             static let deleteTitle: String = "Delete"
         }
+        
+        enum EmptyStateView {
+            static let image: UIImage? = UIImage(systemName: "bookmark.slash.fill")
+            static let title: String = "Your shopping list is empty"
+            static let description: String = "Add some products to your list"
+        }
     }
     
     // MARK: - Private fields
@@ -72,6 +78,12 @@ final class ShoppingListViewController: UIViewController {
     private var buyButton: UIButton = UIButton(type: .system)
     private var clearButton: UIButton = UIButton(type: .system)
     private let alert: UIAlertController = UIAlertController()
+    private let emptyStateView: StateView = StateView(
+        image: Constant.EmptyStateView.image,
+        title: Constant.EmptyStateView.title,
+        description: Constant.EmptyStateView.description
+    )
+    
     private let collection: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewFlowLayout()
@@ -99,8 +111,9 @@ final class ShoppingListViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func displayStart() {
+    func displayStart(emptyState: Bool) {
         collection.reloadData()
+        emptyStateView.isHidden = !emptyState
     }
     
     func setUpAlert(id: Int) -> UIAlertController {
@@ -125,7 +138,6 @@ final class ShoppingListViewController: UIViewController {
         
         alert.addAction(deleteAction)
         alert.addAction(cancelAction)
-        
         return alert
     }
     
@@ -139,6 +151,7 @@ final class ShoppingListViewController: UIViewController {
         setUpCollection()
         setUpClearButton()
         setUpBuyButton()
+        setUpEmptyStateView()
     }
     
     private func setUpTitle() {
@@ -178,6 +191,15 @@ final class ShoppingListViewController: UIViewController {
         collection.pinTop(to: titleLabel.bottomAnchor, Constant.CollectionView.topOffset)
         collection.pinHorizontal(to: view)
         collection.pinBottom(to: view.safeAreaLayoutGuide.bottomAnchor)
+    }
+    
+    private func setUpEmptyStateView() {
+        emptyStateView.isHidden = true
+        
+        view.addSubview(emptyStateView)
+        emptyStateView.pinTop(to: titleLabel.bottomAnchor, Constant.CollectionView.topOffset)
+        emptyStateView.pinHorizontal(to: view)
+        emptyStateView.pinBottom(to: view.safeAreaLayoutGuide.bottomAnchor)
     }
     
     private func setUpClearButton() {
@@ -221,7 +243,6 @@ final class ShoppingListViewController: UIViewController {
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension ShoppingListViewController: UICollectionViewDelegateFlowLayout {
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         interactor.loadProductCard(for: indexPath.item)

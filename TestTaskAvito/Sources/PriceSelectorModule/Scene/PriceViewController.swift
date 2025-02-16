@@ -286,9 +286,9 @@ final class PriceViewController: UIViewController {
         if let min = Int(formatString(fromPriceTextField.text ?? "")),
            let max = Int(formatString(toPriceTextField.text ?? "")) {
             interactor.applyFilter(minPrice: min, maxPrice: max)
+        } else {
+            interactor.applyFilter(minPrice: nil, maxPrice: nil)
         }
-        
-        interactor.applyFilter(minPrice: nil, maxPrice: nil)
     }
     
     @objc

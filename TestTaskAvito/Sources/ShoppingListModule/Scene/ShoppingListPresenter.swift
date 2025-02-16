@@ -11,15 +11,13 @@ final class ShoppingListPresenter: ShoppingListPresentationLogic {
     // MARK: - Variables
     weak var view: ShoppingListViewController?
     
-    func presentProducts() {
+    // MARK: - Methods
+    func presentProducts(emptyState: Bool) {
         DispatchQueue.main.async { [weak self] in
-            self?.view?.displayStart()
+            self?.view?.displayStart(emptyState: emptyState)
         }
     }
-}
-
-// MARK: - RouterLogic
-extension ShoppingListPresenter: ShoppingListRouterLogic {
+    
     func presentShareSheet(_ shareItems: [String]) {
         let activityViewController: UIActivityViewController = UIActivityViewController(
             activityItems: shareItems,
@@ -34,7 +32,10 @@ extension ShoppingListPresenter: ShoppingListRouterLogic {
             view?.present(alert, animated: true)
         }
     }
-    
+}
+
+// MARK: - RouterLogic
+extension ShoppingListPresenter: ShoppingListRouterLogic {
     func presentProductCard(with model: ShoppingListItemModel) {
         view?.navigationController?.pushViewController(
             ProductCardAssembly.build(

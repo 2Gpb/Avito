@@ -174,12 +174,11 @@ extension CategoryViewController: UITableViewDelegate {
         }
         
         cell.showCheckImage()
-        
         interactor.selectedCategory(index: indexPath.row) { index in
             guard let index = index, let deselectedCell = tableView.cellForRow(
                 at: IndexPath(
-                row: index,
-                section: CollectionSection.filters.rawValue
+                    row: index,
+                    section: CollectionSection.filters.rawValue
                 )
             ) as? CategoryCell
             else { return }
