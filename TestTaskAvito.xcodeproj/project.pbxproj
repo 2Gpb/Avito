@@ -17,8 +17,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		D0398A7D2D6145670074CAE5 /* TestTaskAvito.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = TestTaskAvito.app; path = "/Users/peter/Documents/Swift/TestTaskAvito/build/Debug-iphoneos/TestTaskAvito.app"; sourceTree = "<absolute>"; };
-		D0398C7A2D6224AA0074CAE5 /* TestTaskAvitoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = TestTaskAvitoTests.xctest; path = "/Users/peter/Documents/Swift/TestTaskAvito/build/Debug-iphoneos/TestTaskAvito.app/PlugIns/TestTaskAvitoTests.xctest"; sourceTree = "<absolute>"; };
+		D0398A7D2D6145670074CAE5 /* TestTaskAvito.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = TestTaskAvito.app; path = "build/Debug-iphoneos/TestTaskAvito.app"; sourceTree = "<absolute>"; };
+		D0398C7A2D6224AA0074CAE5 /* TestTaskAvitoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = TestTaskAvitoTests.xctest; path = "build/Debug-iphoneos/TestTaskAvito.app/PlugIns/TestTaskAvitoTests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
