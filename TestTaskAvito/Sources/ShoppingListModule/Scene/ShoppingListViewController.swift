@@ -138,7 +138,6 @@ final class ShoppingListViewController: UIViewController {
         
         alert.addAction(deleteAction)
         alert.addAction(cancelAction)
-        
         return alert
     }
     
@@ -244,7 +243,6 @@ final class ShoppingListViewController: UIViewController {
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension ShoppingListViewController: UICollectionViewDelegateFlowLayout {
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         interactor.loadProductCard(for: indexPath.item)

@@ -12,6 +12,7 @@ final class ShoppingListInteractor: NSObject, ShoppingListBusinessLogic & Shoppi
     private let presenter: ShoppingListPresentationLogic & ShoppingListRouterLogic
     private let service: ShoppingListCoreDataServiceLogic
     
+    // MARK: - Variables
     var products: [ShoppingListItemModel] = []
     
     // MARK: - Lifecycle

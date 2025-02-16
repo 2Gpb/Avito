@@ -8,7 +8,7 @@
 import UIKit
 
 enum Color: String, CaseIterable {
-    // Base Colors
+    // MARK: - Base Colors
     case base0 = "D2D2D2"
     case base5 = "C1C1C1"
     case base10 = "606060"
@@ -20,10 +20,9 @@ enum Color: String, CaseIterable {
     case base70 = "141414"
     case base80 = "0A0A0A"
     
+    // MARK: - Accent colours
     case description = "7F7F7F"
-    // Accent colours
     case lightBlue = "01A9FF"
-    case blue = "4A40FF"
 }
 
 extension UIColor {
@@ -60,7 +59,6 @@ extension UIColor {
         }
     }
 }
-
 
 extension UIColor {
     convenience init(color: Color) {

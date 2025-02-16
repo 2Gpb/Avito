@@ -21,16 +21,20 @@ enum Networking {
 }
 
 final class BaseURLWorker: NetworkingLogic {
+    // MARK: - Error
     enum BaseURLError: Error {
         case invalidRequest
     }
     
+    // MARK: - Variables
     var baseUrl: String
     
+    // MARK: - Lifecycle
     init(baseUrl: String) {
         self.baseUrl = baseUrl
     }
     
+    // MARK: - Methods
     func execute(with request: Request, completion: @escaping Response) {
         guard let urlRequest = convert(request) else {
             completion(.failure(BaseURLError.invalidRequest))
@@ -49,6 +53,7 @@ final class BaseURLWorker: NetworkingLogic {
         task.resume()
     }
     
+    // MARK: - Private fields
     private func convert(_ request: Request) -> URLRequest? {
         guard let url = generateDestinationURL(for: request) else {
             return nil
