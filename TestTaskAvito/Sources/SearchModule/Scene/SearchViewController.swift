@@ -83,6 +83,7 @@ final class SearchViewController: UIViewController {
     private let clearSearchTextFieldButton: UIButton = UIButton(type: .system)
     private let leftViewSearchTextField: UIImageView = UIImageView()
     private let rightViewSearchTextField: UIImageView = UIImageView()
+    private let searchStateView: UIView = UIView()
     private let emptyStateView: StateView = StateView(
         image: Constant.EmptyState.image,
         title: Constant.EmptyState.title,
@@ -125,10 +126,28 @@ final class SearchViewController: UIViewController {
     // MARK: - Methods
     func displayStart(with title: String?, errorState: Bool, emptyState: Bool) {
         searchTextField.text = title
-        emptyStateView.isHidden = !emptyState
-        errorStateView.isHidden = !errorState
-        activityIndicator.stopAnimating()
-        collection.reloadData()
+        
+        emptyStateView.isHidden = true
+        errorStateView.isHidden = true
+        
+        if errorState || emptyState {
+            activityIndicator.startAnimating()
+            collection.reloadData()
+        }
+        
+        if let title = title, !title.isEmpty {
+            searchStateView.isHidden = false
+            activityIndicator.startAnimating()
+            collection.reloadData()
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.activityIndicator.stopAnimating()
+            self?.emptyStateView.isHidden = !emptyState
+            self?.errorStateView.isHidden = !errorState
+            self?.searchStateView.isHidden = true
+            self?.collection.reloadData()
+        }
     }
     
     func displayFilters() {
@@ -249,10 +268,12 @@ final class SearchViewController: UIViewController {
     }
     
     private func setUpStates() {
+        searchStateView.backgroundColor = UIColor(color: .base70)
+        searchStateView.isHidden = true
         emptyStateView.isHidden = true
         errorStateView.isHidden = true
         
-        [errorStateView, emptyStateView].forEach {
+        [errorStateView, emptyStateView, searchStateView].forEach {
             self.view.addSubview($0)
             $0.pinTop(to: collection.topAnchor, Constant.Collection.filtersHeight + 40)
             $0.pinHorizontal(to: self.view)
@@ -326,6 +347,7 @@ final class SearchViewController: UIViewController {
         
         if searchTextField.text != "" && searchTextField.text != nil {
             clearSearchTextFieldButton.isHidden = false
+            leftViewSearchTextField.tintColor = UIColor(color: .base0)
         }
     
         searchTextFieldRightConstarint?.isActive = false
@@ -360,6 +382,7 @@ final class SearchViewController: UIViewController {
     
     @objc
     private func dismissKeyboard() {
+        leftViewSearchTextField.tintColor = UIColor(color: .base10)
         clearSearchTextFieldButton.isHidden = true
         searchTextField.resignFirstResponder()
     }
@@ -470,6 +493,7 @@ extension SearchViewController: UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         clearSearchTextFieldButton.isHidden = true
+        leftViewSearchTextField.tintColor = UIColor(color: .base10)
         searchTextField.resignFirstResponder()
     }
     

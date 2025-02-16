@@ -48,6 +48,11 @@ final class CategoryCell: UITableViewCell {
         fatalError(Constant.Error.message)
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        checkView.isHidden = true
+    }
+    
     // MARK: - Methods
     func configure(text: String) {
         titleLabel.text = text
@@ -61,6 +66,7 @@ final class CategoryCell: UITableViewCell {
         checkView.isHidden = true
     }
     
+    // MARK: - SetUp
     private func setUp() {
         self.backgroundColor = .clear
         
@@ -68,7 +74,6 @@ final class CategoryCell: UITableViewCell {
         setUpCheckView()
     }
     
-    // MARK: - SetUp
     private func setUpTitleLabel() {
         titleLabel = ViewFactory.shared.setUpLabel(
             label: titleLabel,

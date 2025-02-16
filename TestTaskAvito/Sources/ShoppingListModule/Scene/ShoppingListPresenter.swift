@@ -11,9 +11,9 @@ final class ShoppingListPresenter: ShoppingListPresentationLogic {
     // MARK: - Variables
     weak var view: ShoppingListViewController?
     
-    func presentProducts() {
+    func presentProducts(emptyState: Bool) {
         DispatchQueue.main.async { [weak self] in
-            self?.view?.displayStart()
+            self?.view?.displayStart(emptyState: emptyState)
         }
     }
 }
