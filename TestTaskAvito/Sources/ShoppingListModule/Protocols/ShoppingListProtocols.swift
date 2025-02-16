@@ -17,11 +17,11 @@ protocol ShoppingListBusinessLogic: UICollectionViewDataSource {
 
 protocol ShoppingListPresentationLogic {
     func presentProducts(emptyState: Bool)
+    func presentAlert(id: Int)
+    func presentShareSheet(_ shareSheet: [String])
 }
 
 protocol ShoppingListRouterLogic {
-    func presentShareSheet(_ shareSheet: [String])
-    func presentAlert(id: Int)
     func presentProductCard(with model: ShoppingListItemModel)
 }
 

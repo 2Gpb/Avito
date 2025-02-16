@@ -16,10 +16,7 @@ final class ShoppingListPresenter: ShoppingListPresentationLogic {
             self?.view?.displayStart(emptyState: emptyState)
         }
     }
-}
-
-// MARK: - RouterLogic
-extension ShoppingListPresenter: ShoppingListRouterLogic {
+    
     func presentShareSheet(_ shareItems: [String]) {
         let activityViewController: UIActivityViewController = UIActivityViewController(
             activityItems: shareItems,
@@ -34,7 +31,10 @@ extension ShoppingListPresenter: ShoppingListRouterLogic {
             view?.present(alert, animated: true)
         }
     }
-    
+}
+
+// MARK: - RouterLogic
+extension ShoppingListPresenter: ShoppingListRouterLogic {
     func presentProductCard(with model: ShoppingListItemModel) {
         view?.navigationController?.pushViewController(
             ProductCardAssembly.build(

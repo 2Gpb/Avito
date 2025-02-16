@@ -9,7 +9,7 @@ import UIKit
 
 final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
     // MARK: - Variables
-    private var filters: FiltersModel
+    private(set) var filters: FiltersModel
     var products: ProductsResponse = []
     
     // MARK: - Private fields
