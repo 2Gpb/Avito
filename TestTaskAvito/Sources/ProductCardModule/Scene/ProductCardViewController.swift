@@ -23,7 +23,7 @@ final class ProductCardViewController: UIViewController {
                 systemName: "chevron.left",
                 withConfiguration: UIImage.SymbolConfiguration(
                     pointSize: 18,
-                    weight: .regular,
+                    weight: .semibold,
                     scale: .default
                 )
             )
@@ -31,14 +31,14 @@ final class ProductCardViewController: UIViewController {
         
         enum ShareButton {
             static let topOffset: CGFloat = 4
-            static let rightOffset: CGFloat = 5
+            static let rightOffset: CGFloat = 6
             static let width: CGFloat = 44
             static let height: CGFloat = 44
             static let image: UIImage? = UIImage(
                 systemName: "square.and.arrow.up",
                 withConfiguration: UIImage.SymbolConfiguration(
                     pointSize: 18,
-                    weight: .regular,
+                    weight: .semibold,
                     scale: .default
                 )
             )

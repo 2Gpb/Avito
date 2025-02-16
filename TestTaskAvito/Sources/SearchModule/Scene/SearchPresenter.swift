@@ -12,9 +12,9 @@ final class SearchPresenter: SearchPresentationLogic {
     weak var view: SearchViewController?
     
     // MARK: - Methods
-    func presentStart(isHidden: Bool) {
+    func presentStart(with title: String?, failedViewIsHidden: Bool) {
         DispatchQueue.main.async { [weak self] in
-            self?.view?.displayStart(isHidden)
+            self?.view?.displayStart(with: title, failedViewIsHidden: failedViewIsHidden)
         }
     }
     

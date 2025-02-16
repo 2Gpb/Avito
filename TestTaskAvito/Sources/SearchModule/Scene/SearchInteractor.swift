@@ -35,22 +35,6 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
         refresh()
     }
     
-    func loadSelectCategory() {
-        presenter.routeToSelectCategory(completion: { [weak self] id, categoryName in
-            self?.filters.categoryId = id
-            self?.filters.categoryName = categoryName
-            self?.presenter.presentFilters()
-        }, currentCategoryId: filters.categoryId)
-    }
-    
-    func loadPriceSelector() {
-        presenter.routeToPriceSelector(completion: { [weak self] min, max in
-            self?.filters.priceFrom = min
-            self?.filters.priceTo = max
-            self?.presenter.presentFilters()
-        }, currentMin: filters.priceFrom, currentMax: filters.priceTo)
-    }
-    
     func loadProductCard(for index: Int) {
         presenter.routeToProductCard(with: products[index])
     }
@@ -78,9 +62,26 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
         refresh()
     }
     
-    func resetSearch() {
-        filters.title = nil
+    func loadSelectedQuery(with index: Int) {
+        let history = storageService.get(forKey: UserDefaultsKeys.history.rawValue, defaultValue: [""])
+        filters.title = history[index]
         refresh()
+    }
+    
+    func loadSelectCategory() {
+        presenter.routeToSelectCategory(completion: { [weak self] id, categoryName in
+            self?.filters.categoryId = id
+            self?.filters.categoryName = categoryName
+            self?.presenter.presentFilters()
+        }, currentCategoryId: filters.categoryId)
+    }
+    
+    func loadPriceSelector() {
+        presenter.routeToPriceSelector(completion: { [weak self] min, max in
+            self?.filters.priceFrom = min
+            self?.filters.priceTo = max
+            self?.presenter.presentFilters()
+        }, currentMin: filters.priceFrom, currentMax: filters.priceTo)
     }
     
     // MARK: - Private fields
@@ -91,15 +92,6 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
             priceMax: filters.priceTo,
             categoryId: filters.categoryId
         )
-    }
-    
-    private func updateProducts(_ products: ProductsResponse) {
-        self.products = products
-        if self.products.isEmpty {
-            presenter.presentStart(isHidden: false)
-        } else {
-            presenter.presentStart(isHidden: true)
-        }
     }
     
     private func loadProducts(
@@ -122,6 +114,15 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
             case .failure(let error):
                 print(error)
             }
+        }
+    }
+    
+    private func updateProducts(_ products: ProductsResponse) {
+        self.products = products
+        if self.products.isEmpty {
+            presenter.presentStart(with: filters.title ?? "", failedViewIsHidden: false)
+        } else {
+            presenter.presentStart(with: filters.title ?? "", failedViewIsHidden: true)
         }
     }
 }
@@ -178,6 +179,7 @@ extension SearchInteractor: UICollectionViewDataSource {
             }
             
             cell.resetFilters = { [weak self] in
+                self?.filters.title = nil
                 self?.filters.categoryId = nil
                 self?.filters.categoryName = nil
                 self?.filters.priceFrom = nil

@@ -60,7 +60,7 @@ final class SearchViewController: UIViewController {
         }
     }
     // MARK: - Private fields
-    private var interactor: SearchBusinessLogic
+    private let interactor: SearchBusinessLogic
     
     // MARK: - UI Components
     private var cancelButton: UIButton = UIButton(type: .system)
@@ -98,17 +98,18 @@ final class SearchViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func displayStart(_ isHidden: Bool) {
+    func displayStart(with title: String?, failedViewIsHidden: Bool){
+        searchTextField.text = title
+        emptyStateView.isHidden = failedViewIsHidden
         collection.reloadData()
-        emptyStateView.isHidden = isHidden
     }
     
     func displayFilters() {
         collection.reloadSections(IndexSet(integer: 0))
     }
     
-    func displayCategoryName(_ name: String) {
-        title = name
+    func displayClearSearch() {
+        searchTextField.text = nil
     }
     
     // MARK: - SetUp
@@ -272,6 +273,13 @@ final class SearchViewController: UIViewController {
         }
     }
     
+    private func deafaultSearch() {
+        clearSearchTextFieldButton.isHidden = true
+        cancelButton.isHidden = true
+        searchHistoryTable.isHidden = true
+        collection.isHidden = false
+    }
+    
     // MARK: - Actions
     @objc
     private func openSearch() {
@@ -305,16 +313,11 @@ final class SearchViewController: UIViewController {
     private func cancelButtonTapped() {
         view.backgroundColor = UIColor(color: .base80)
         searchTextField.resignFirstResponder()
-        searchTextField.text = nil
         leftViewSearchTextField.tintColor = UIColor(color: .base10)
         
         cancelAnimation()
-        
-        clearSearchTextFieldButton.isHidden = true
-        cancelButton.isHidden = true
-        searchHistoryTable.isHidden = true
-        collection.isHidden = false
-        interactor.resetSearch()
+        deafaultSearch()
+        interactor.loadStart()
     }
     
     @objc
@@ -356,10 +359,7 @@ extension SearchViewController: UITextFieldDelegate {
         leftViewSearchTextField.tintColor = UIColor(color: .base10)
         cancelAnimation()
         
-        clearSearchTextFieldButton.isHidden = true
-        cancelButton.isHidden = true
-        searchHistoryTable.isHidden = true
-        collection.isHidden = false
+        deafaultSearch()
         interactor.loadSearch(with: textField.text)
         return true
     }
@@ -433,5 +433,12 @@ extension SearchViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         clearSearchTextFieldButton.isHidden = true
         searchTextField.resignFirstResponder()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        deafaultSearch()
+        cancelAnimation()
+        interactor.loadSelectedQuery(with: indexPath.row)
     }
 }
