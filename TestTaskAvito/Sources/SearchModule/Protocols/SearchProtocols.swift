@@ -17,9 +17,8 @@ protocol SearchBusinessLogic: UICollectionViewDataSource, UITableViewDataSource 
 }
 
 protocol SearchPresentationLogic {
-    func presentStart(with title: String?, failedViewIsHidden: Bool)
+    func presentStart(with title: String?, errorState: Bool, emptyState: Bool)
     func presentFilters()
-//    func presentClearSearch()
 }
 
 protocol SearchRouterLogic {

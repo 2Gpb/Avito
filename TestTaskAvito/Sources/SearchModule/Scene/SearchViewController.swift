@@ -58,7 +58,20 @@ final class SearchViewController: UIViewController {
             static let topOffset: CGFloat = 12
             static let heightCell: CGFloat = 55
         }
+        
+        enum ErrorState {
+            static let image: UIImage? = UIImage(systemName: "exclamationmark.square")
+            static let title: String = "Data loading error"
+            static let description: String = "Press ‘Show items’ to try again"
+        }
+        
+        enum EmptyState {
+            static let image: UIImage? = UIImage(systemName: "magnifyingglass")
+            static let title: String = "No results for your query"
+            static let description: String = "Try changing the search terms"
+        }
     }
+    
     // MARK: - Private fields
     private let interactor: SearchBusinessLogic
     
@@ -70,7 +83,19 @@ final class SearchViewController: UIViewController {
     private let clearSearchTextFieldButton: UIButton = UIButton(type: .system)
     private let leftViewSearchTextField: UIImageView = UIImageView()
     private let rightViewSearchTextField: UIImageView = UIImageView()
-    private let emptyStateView: EmptyStateView = EmptyStateView()
+    private let emptyStateView: StateView = StateView(
+        image: Constant.EmptyState.image,
+        title: Constant.EmptyState.title,
+        description: Constant.EmptyState.description
+    )
+    
+    private let errorStateView: StateView = StateView(
+        image: Constant.ErrorState.image,
+        title: Constant.ErrorState.title,
+        description: Constant.ErrorState.description
+    )
+    
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
     private let collection: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewFlowLayout()
@@ -98,9 +123,11 @@ final class SearchViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func displayStart(with title: String?, failedViewIsHidden: Bool){
+    func displayStart(with title: String?, errorState: Bool, emptyState: Bool) {
         searchTextField.text = title
-        emptyStateView.isHidden = failedViewIsHidden
+        emptyStateView.isHidden = !emptyState
+        errorStateView.isHidden = !errorState
+        activityIndicator.stopAnimating()
         collection.reloadData()
     }
     
@@ -119,10 +146,18 @@ final class SearchViewController: UIViewController {
         
         setUpSearchTextField()
         setUpProductCollection()
-        setUpEmptyState()
+        setUpStates()
         
         setUpCancelButton()
         setUpSearchHistoryTable()
+        setupActivityIndicator()
+    }
+    
+    private func setupActivityIndicator() {
+        activityIndicator.center = view.center
+        activityIndicator.color = UIColor(color: .base0)
+        view.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
     }
     
     private func setUpSearchTextField() {
@@ -213,13 +248,16 @@ final class SearchViewController: UIViewController {
         collection.pinBottom(to: view)
     }
     
-    private func setUpEmptyState() {
+    private func setUpStates() {
         emptyStateView.isHidden = true
+        errorStateView.isHidden = true
         
-        view.addSubview(emptyStateView)
-        emptyStateView.pinTop(to: collection.topAnchor, Constant.Collection.filtersHeight + 40)
-        emptyStateView.pinHorizontal(to: view)
-        emptyStateView.pinBottom(to: view)
+        [errorStateView, emptyStateView].forEach {
+            self.view.addSubview($0)
+            $0.pinTop(to: collection.topAnchor, Constant.Collection.filtersHeight + 40)
+            $0.pinHorizontal(to: self.view)
+            $0.pinBottom(to: self.view)
+        }
     }
     
     private func setUpCancelButton() {

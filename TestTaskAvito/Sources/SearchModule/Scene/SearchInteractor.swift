@@ -7,15 +7,15 @@
 
 import UIKit
 
-final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {    
+final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
+    // MARK: - Variables
+    private var filters: FiltersModel
+    var products: ProductsResponse = []
+    
     // MARK: - Private fields
     private let presenter: SearchPresentationLogic & SearchRouterLogic
     private let productsService: ProductsWorker
     private let storageService: UserDefaultsLogic
-    
-    // MARK: - Variables
-    var filters: FiltersModel
-    var products: ProductsResponse = []
     
     // MARK: - Lifecycle
     init(
@@ -111,8 +111,12 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
             switch response {
             case .success(let products):
                 self?.updateProducts(products ?? [])
-            case .failure(let error):
-                print(error)
+            case .failure(_):
+                self?.presenter.presentStart(
+                    with: self?.filters.title ?? "",
+                    errorState: true,
+                    emptyState: false
+                )
             }
         }
     }
@@ -120,13 +124,20 @@ final class SearchInteractor: NSObject, SearchBusinessLogic & ProductStorage {
     private func updateProducts(_ products: ProductsResponse) {
         self.products = products
         if self.products.isEmpty {
-            presenter.presentStart(with: filters.title ?? "", failedViewIsHidden: false)
+            presenter.presentStart(
+                with: filters.title ?? "",
+                errorState: false,
+                emptyState: true
+            )
         } else {
-            presenter.presentStart(with: filters.title ?? "", failedViewIsHidden: true)
+            presenter.presentStart(
+                with: filters.title ?? "",
+                errorState: false,
+                emptyState: false
+            )
         }
     }
 }
-
 
 // MARK: - UICollectionViewDataSource
 extension SearchInteractor: UICollectionViewDataSource {

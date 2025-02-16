@@ -53,7 +53,7 @@ final class AsyncImageView: UIView {
         }
         
         URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let data = data, let image = UIImage(data: data), let error = error else {
+            guard let data = data, let image = UIImage(data: data), error == nil else {
                 self?.showWarning()
                 print(error?.localizedDescription ?? "Unknown error")
                 return
