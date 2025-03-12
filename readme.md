@@ -1,26 +1,25 @@
-# TestTaskAvito
+# Avito
 
-### Описание проекта:
-Проект включает постраничную загрузку товаров, удобный поиск с возможностью фильтрации, кэширование изображений для быстрой загрузки, а также плавный shimmer-эффект при подгрузке данных. 
-Реализовано сохранение истории поисковых запросов, обработка empty-state при отсутствии товаров или ошибке загрузки, детальная карточка товара и удобный список покупок
-с возможностью сохранять, удалять и делиться товарами.. Кроме того, предусмотрена поддержка тестов для обеспечения стабильности и надежности приложения.
+### Project Description:
+The project includes paginated product loading, a convenient search with filtering capabilities, image caching for fast loading, and a smooth shimmer effect when loading data.  
+It implements search query history saving, empty-state handling when no products are available or in case of a loading error, a detailed product card, and a user-friendly shopping list  
+with the ability to save, delete, and share products. Additionally, test support is provided to ensure the stability and reliability of the application.
 
-### Дизайн
-[Макет в Figma](https://www.figma.com/design/XO8gGlwIRKt8AhTk6Tbdje/Test-task-Avito?node-id=0-1&t=up2szI7Bw4SPyM5g-1)
+### Design
+[Figma Prototype](https://www.figma.com/design/XO8gGlwIRKt8AhTk6Tbdje/Test-task-Avito?node-id=0-1&t=up2szI7Bw4SPyM5g-1)
 
-### Архитектура:
+### Architecture:
 **SVIP (VIPER):**
 
-- View – Отображает интерфейс и взаимодействует с пользователем.
-- Interactor – Бизнес-логика приложения.
-- Presenter – Подготовка данных для пользовательского интерфейса и реализация Router'a.
-- Router – Управление переходами между экранами.
-- Worker – Обработка данных и сетевых запросов.
+- **View** – Displays the interface and interacts with the user.
+- **Interactor** – Contains the business logic of the application.
+- **Presenter** – Prepares data for the user interface and implements the Router.
+- **Router** – Manages screen transitions.
+- **Worker** – Handles data processing and network requests.
 
-Более подробно об архитектурном шаблоне: [Статья](https://habr.com/ru/companies/wildberries/articles/798275/)
+More details about the architectural pattern: [Article](https://habr.com/ru/companies/wildberries/articles/798275/)
 
-
-### Технологии
+### Technologies
 
 - Swift
 - UIKit | UIView+Pin
@@ -29,44 +28,44 @@
 - NSCache
 - XCTest
 
-### Функционал:
-**1. Экран поиска (выдача товаров) ✅** 
-- Список товаров с постраничной загрузкой
-- Отображение товаров в виде плитки (2 товара в ряду)
-- Возможность фильтровать товары по категории или ценовому диапазону
-- Поиск по тексту с сохранением 7 последних неповторяющихся запросов
-- Empty-state при отсутствии товаров и Error-state при ошибке загрузки
-- Shimmer-эффект при загрузке фото
-- Переход на карточку товара
+### Functionality:
+**1. Search Screen (Product Listing) ✅**  
+- Paginated product list  
+- Grid view display (2 products per row)  
+- Ability to filter products by category or price range  
+- Text search with the last 7 unique queries saved  
+- Empty-state when no products are available and error-state for loading failures  
+- Shimmer effect when loading images  
+- Navigation to the product card  
 
-**2. Карточка товара ✅**
-- Отображение изображения, заголовка, описания, цены и категории
-- Placeholder при ошибке загрузки изображения
-- Возможность добавить товар в список покупок
-- Возможность перехода в список покупок 
-- Возможность увеличить/уменьшить количество товара
-- Возможность поделиться товаром
-- Возврат на экран поиска
+**2. Product Card ✅**  
+- Displays image, title, description, price, and category  
+- Placeholder in case of image loading failure  
+- Ability to add the product to the shopping list  
+- Navigation to the shopping list  
+- Ability to increase/decrease product quantity  
+- Ability to share the product  
+- Return to the search screen  
 
-**3. Список покупок ✅**
-- Отображение добавленных товаров с картинками, ценами и количеством
-- Возможность изменить количество товара или удалить его
-- Сохранение списка покупок между сессиями (персистентность)
-- Возможность очистить весь список
-- Синхронизация состояния с экраном поиска и карточками товаров
-- Функция «поделиться» списком покупок в мессенджере или заметках
-- Переход на карточку товара
+**3. Shopping List ✅**  
+- Displays added products with images, prices, and quantities  
+- Ability to change the quantity or remove a product  
+- Persistent shopping list across sessions  
+- Option to clear the entire list  
+- State synchronization with the search screen and product cards  
+- "Share" function to send the shopping list via messenger or notes  
+- Navigation to the product card  
 
-### Тестирование
+### Testing  
 
-**Проект содержит XCTest-тесты**
+**The project includes XCTest tests**  
 
-- Реализованы Unit-тесты для бизнес-логики отдельных модулей
+- Unit tests implemented for business logic in separate modules  
 
-### Запуск проекта
-1. ```git clone git@github.com:2Gpb/TestTaskAvito.git```
-2. Открыть TestTaskAvito.xcodeproj в Xcode
-3. Запустить проект
+### Running the Project  
+1. ```git clone git@github.com:2Gpb/TestTaskAvito.git```  
+2. Open **TestTaskAvito.xcodeproj** in Xcode  
+3. Run the project  
 
 
 # Visual
