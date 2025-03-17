@@ -24,8 +24,10 @@ More details about the architectural pattern: [Article](https://habr.com/ru/comp
 - Swift
 - UIKit | UIView+Pin
 - URLSession
+- GCD
 - UserDefaults | CoreData
 - NSCache
+- SOLID
 - XCTest
 
 ### Functionality:
@@ -82,5 +84,3 @@ More details about the architectural pattern: [Article](https://habr.com/ru/comp
 
 ![Запись экрана 2025-02-19 в 11 45 22](https://github.com/user-attachments/assets/26cb66d5-edeb-4f7e-ae4c-38768280ba6c)
 ![Запись экрана 2025-02-19 в 12 01 31](https://github.com/user-attachments/assets/58a09591-070f-4503-9122-36ad5a831fbd)
-
-

@@ -22,7 +22,7 @@ final class SearchService: ProductsWorker {
         for address: ProductModel.Address,
         completion: ((Result<ProductsResponse?, Error>) -> Void)?
     ) {
-        let endpoint =  SearchEndpoint.products(
+        let endpoint = SearchEndpoint.products(
             title: address.title,
             priceMin: address.priceMin,
             priceMax: address.priceMax,
